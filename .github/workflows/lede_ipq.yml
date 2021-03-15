@@ -1,0 +1,89 @@
+#https://github.com/P3TERX/Actions-OpenWrt
+
+name: Build OpenWrt_IPQ4019
+
+on:
+  push:
+#    branches:
+#      - master
+    paths:
+      - '.config.ipq'
+      - 'diy_lede.sh'
+      - '.github/workflows/lede_ipq.yml'
+  schedule:
+    - cron: 0 20 * * 0 #时差晚6小时
+  watch:
+    types: started
+
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  CONFIG_FILE: .config.ipq
+  DIY_SH: diy_lede.sh
+  SSH_ACTIONS: false
+  DIR: /lede
+
+jobs:
+  Build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -E apt-get update
+        sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf swig
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get clean
+        sudo mkdir -p $DIR
+        sudo chmod -R 777 $DIR
+
+    - name: Clone Code
+      run: |
+        echo "DATE=$(date +"%y%m%d")" >> $GITHUB_ENV
+        git clone --depth 1 $REPO_URL $DIR
+
+    - name: Update & Install Feeds
+      run: |
+        cd $DIR
+        sed -i 's@#src-git helloworld@src-git helloworld@g' ./feeds.conf.default
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: Load Custom Configuration
+      run: |
+        echo $PWD #run开始时为默认位置
+        mv -f $CONFIG_FILE $DIR/.config
+        mv -f $DIY_SH $DIR/$DIY_SH
+        cd $DIR
+        chmod +x $DIY_SH
+        bash $DIY_SH
+
+    - name: SSH Connection To Actions
+      uses: garypang13/debugger-action@master
+      if: env.SSH_ACTIONS == 'true'
+
+    - name: Build Firmware
+      run: |
+        cd $DIR
+        make defconfig
+        make -j$(($(nproc) + 1)) V=s || make -j1 V=s
+
+    - name: Organize Files
+      run: |
+        cd $DIR/bin/targets/*/*
+        echo "OUTPUT=$PWD" >> $GITHUB_ENV
+        rm -fr packages *.buildinfo *.manifest *.ubi sha256sums
+        mv -f *cm520*.bin CM520_LEDE_${{env.DATE}}.bin
+        #mv -f *hc5962*factory*.bin B70_LEDE_factory_${{env.DATE}}.bin
+        #mv -f *hc5962*sysupgrade*.bin B70_LEDE_sysupgrade_${{env.DATE}}.bin
+
+    - name: Upload Firmware
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt_${{env.DATE}}
+        path: ${{env.OUTPUT}}

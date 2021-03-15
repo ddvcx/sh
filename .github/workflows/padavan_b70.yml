@@ -1,0 +1,122 @@
+name: Build Padavan-B70
+
+on:
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - '.github/workflows/padavan_b70.yml'
+#  schedule:
+#    - cron: 0 20 * * 0 #时差晚6小时
+#  watch:
+#    types: started
+
+env:
+  DEVICE: B70 #设备名, 见/trunk/configs/templates
+  URL: https://github.com/hanwckf/rt-n56u
+  DIR: /opt/rt-n56u
+ 
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libtool libtool-bin curl cmake gperf gawk bison nano xxd cpio python-docutils gettext help2man pkg-config libgmp3-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake  autopoint device-tree-compiler psmisc
+
+    - name: Clone Code
+      run: |
+        git clone --depth=1 $URL $DIR
+        cd $DIR/toolchain-mipsel
+        sh dl_toolchain.sh
+        mkdir -p /opt/images
+
+    - name: Build Firmware
+      run: |
+        cd $DIR/trunk
+        if [ ! -f configs/templates/$DEVICE.config ] ; then
+        echo "configs/templates/$DEVICE.config not found "
+        exit 1
+        fi
+        #cp -f configs/templates/$DEVICE.config .config
+        ##################################################
+        cd $DIR/trunk/configs/templates
+        sed -i 's@\(.*FIRMWARE_ENABLE_USB.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_ENABLE_UFSD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_ENABLE_FAT.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_ENABLE_EXFAT.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_ENABLE_FUSE.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_UVC.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SERIAL.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_AUDIO.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_QOS.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_LPRD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_U2EC.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SMBD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SMBD36.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_FTPD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_XUPNPD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_MINIDLNA.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_FFMPEG_NEW.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_ARIA.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_ARIA2_NEW_PREBUILD_BIN.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_ARIA_WEB_CONTROL.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_CURL.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SCUTCLIENT.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_DOGCOM.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_MINIEAP.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_NJIT_CLIENT.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_NAPT66.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SHADOWSOCKS.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SSSERVER.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SOFTETHERVPN_CMD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_DNSFORWARDER.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_TTYD.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_LRZSZ.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_HTOP.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_IPERF3.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_DUMP1090.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_RTL_SDR.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_SRELAY.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_MENTOHUST.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_FRPC.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        sed -i 's@\(.*FIRMWARE_INCLUDE_FRPS.*\)y\(.*\)@\1n\2@' $DEVICE.config
+        #修改关闭telnet/开启ssh)
+        cd $DIR/trunk/user/shared
+        sed -i 's/\(.*telnetd.*\)1\(.*\)/\10\2/' defaults.c
+        sed -i 's/\(.*sshd_enable.*\)0\(.*\)/\11\2/' defaults.c
+        #修改无线设置)
+        sed -i 's/\(.*SYS_USER_ROOT.*\)admin\(.*\)/\1root\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_2G_CC.*\)CN\(.*\)/\1AU\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_5G_CC.*\)US\(.*\)/\1AU\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_2G_SSID.*\)BOARD_PID "_%s"\(.*\)/\1"D"\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_5G_SSID.*\)BOARD_PID "_5G_%s"\(.*\)/\1"D5"\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_2G_GSSID.*\)BOARD_PID "_GUEST_%s"\(.*\)/\1"GUEST_D"\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_5G_GSSID.*\)BOARD_PID "_GUEST_5G_%s"\(.*\)/\1"GUEST_D5"\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_2G_PSK.*\)1234567890\(.*\)/\100000007\2/' defaults.h
+        sed -i 's/\(.*DEF_WLAN_5G_PSK.*\)1234567890\(.*\)/\100000007\2/' defaults.h
+        sed -i 's/\(.*DEF_ROOT_PASSWORD.*\)admin\(.*\)/\1000007\2/' defaults.h
+        #修改storage空间)
+        sed -i '\@size_etc="6M"@csize_etc="16M"' $DIR/trunk/user/scripts/dev_init.sh
+        sed -i 's/\(.*MTD_STORE_PART_SIZ.*\)0x200000\(.*\)/\10xE00000\2/' $DIR/trunk/configs/boards/$DEVICE/kernel-3.4.x.config
+        cd $DIR/trunk
+        sudo ./clear_tree
+        sudo ./build_firmware_modify $DEVICE
+        echo "DATE=$(date +"%y%m%d")" >> $GITHUB_ENV
+        sudo mv -f images/*.trx /opt/images/$DEVICE_Padavan_$DATE.trx
+        ##################################################
+
+    - name : Upload Firmware
+      uses: actions/upload-artifact@main
+      if: always()
+      with:
+        name: Padavan_${{ env.DATE }}
+        path: /opt/images
