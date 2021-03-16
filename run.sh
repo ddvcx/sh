@@ -147,7 +147,7 @@ LEDEMenu() {
 			make defconfig #更新配置
 			cp -rf $DIR/lede/.config $DIR/lede/.config.ipq
 			make -j$(($(nproc) + 1)) V=s
-			mv -f $DIR/lede/bin/targets/ipq40xx/generic/*ipq40*.bin $DIR/CM520-LEDE-$DATE.bin
+			mv -f $DIR/lede/bin/targets/ipq40xx/generic/*ipq40*.bin $DIR/CM520_LEDE_$DATE.bin
 			LEDEMenu
         ;;
         编译固件单线程)
@@ -287,7 +287,7 @@ PadavanMenu() {
 			echo "$opt"
 			cd $DIR/rt-n56u/trunk
 			./build_firmware_modify B70
-			mv -f $DIR/rt-n56u/trunk/images/B70*.trx $DIR/B70-Padavan-$DATE.trx
+			mv -f $DIR/rt-n56u/trunk/images/B70*.trx $DIR/B70_Padavan_$DATE.trx
 			PadavanMenu
         ;;
         修改目录权限)
