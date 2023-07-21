@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
 ! Title: D's ADList
 ! ##[一级目录]>[二级目录] class ### id ##
-! Source:http://github.com/ddvcx/sh/raw/master/ad.txt
+! Source:http://github.com/ddvcx/sh/raw/main/ad.txt
 !-----------------通用-----------------
 ||ajax.api.*
 ||athmapp.com
