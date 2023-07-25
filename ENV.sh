@@ -210,7 +210,7 @@ Show_Status(){ #显示信息
 }
 
 Menu_M(){ #主菜单
-	bash <(${GET} http://raw.githubusercontent.com/ddvcx/sh/master/c.sh)
+	bash <(${GET} http://raw.githubusercontent.com/ddvcx/sh/m/c.sh)
 }
 
 Get_Tag(){ #获取版本号

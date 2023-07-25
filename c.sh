@@ -1,6 +1,6 @@
 #!/usr/bin/env /bin/bash
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/home
-source <(curl -sL http://github.com/ddvcx/sh/raw/master/ENV.sh)
+source <(curl -sL http://github.com/ddvcx/sh/raw/m/ENV.sh)
 
 EXE=caddy 
 EXE2=caddy 
@@ -15,7 +15,7 @@ Install_Exe(){
 	#${GET} -o "${TMP}/${EXE}" ${URL}/releases/download/v${TAG}/${EXE}_${TAG}_linux_amd64.tar.gz
 	#tar -zxvf ${TMP}/${EXE} -C ${TMP}/ >/dev/null 2>&1 #xvf(xz)/zxvf(gz)
 	#mv -f ${TMP}/${EXE} ${DIR}/${EXE2}
-	${GET} -o "${TMP}/web" https://github.com/ddvcx/sh/raw/master/web.zip
+	${GET} -o "${TMP}/web" https://github.com/ddvcx/sh/raw/m/web.zip
 	unzip -o ${TMP}/web -d ${DIR}/ >/dev/null 2>&1
 	rm -rf ${TMP}/*
 	CH
@@ -242,19 +242,19 @@ Menu_Main(){
 		;;
 		XR安装)
 			echo "$opt"
-			bash <(${GET} http://github.com/ddvcx/sh/raw/master/x.sh)
+			bash <(${GET} http://github.com/ddvcx/sh/raw/m/x.sh)
 		;;
 		VS安装)
 			echo "$opt"
-			bash <(${GET} http://github.com/ddvcx/sh/raw/master/v.sh)
+			bash <(${GET} http://github.com/ddvcx/sh/raw/m/v.sh)
 		;;
 		SS安装)
 			echo "$opt"
-			bash <(${GET} http://github.com/ddvcx/sh/raw/master/s.sh)
+			bash <(${GET} http://github.com/ddvcx/sh/raw/m/s.sh)
 		;;
 		HY安装)
 			echo "$opt"
-			bash <(${GET} http://github.com/ddvcx/sh/raw/master/h.sh)
+			bash <(${GET} http://github.com/ddvcx/sh/raw/m/h.sh)
 		;;
 		安装依赖)
 			echo "$opt"

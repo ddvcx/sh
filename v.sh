@@ -1,6 +1,6 @@
 #!/usr/bin/env /bin/bash
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/home
-source <(curl -sL http://github.com/ddvcx/sh/raw/master/ENV.sh)
+source <(curl -sL http://github.com/ddvcx/sh/raw/m/ENV.sh)
 
 EXE=verysimple
 REPO="e1732a364fed/v2ray_simple"
