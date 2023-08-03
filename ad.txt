@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
 ! Title: D's ADList
 ! ##[一级目录]>[二级目录] class ### id ##
-! Source:http://github.com/ddvcx/sh/raw/main/ad.txt
+! Source:http://github.com/ddvcx/sh/raw/m/ad.txt
 !-----------------通用-----------------
 ||ajax.api.*
 ||athmapp.com
@@ -51,7 +51,7 @@
 ##[class="textwidget"]
 ##[class*="BannerAd"]
 ##[class*="OpenInApp"]
-!--##[class="mask"]
+!--##[class="mask"] 验证码无法弹出
 ##[class*="app_download"]
 ##[class*="advertBox"]
 ##[id*="widget-box"]
