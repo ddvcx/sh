@@ -25,6 +25,8 @@
 ##[href*="/jd.dangbei"]
 ##[href*="//webgame.ali213"]
 ##[href*="//click.ali213"]
+##[src*="ad-static-"]
+##[src*="ad-material"]
 ##[src*="ajax.api"]
 ##[class*="app-down"]
 ##[class*="app-open"]
