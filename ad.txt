@@ -53,7 +53,7 @@
 ##[class="textwidget"]
 ##[class*="BannerAd"]
 ##[class*="OpenInApp"]
-!--##[class="mask"] 验证码无法弹出
+!##[class="mask"] 验证码无法弹出
 ##[class*="app_download"]
 ##[class*="advertBox"]
 ##[id*="widget-box"]
@@ -101,7 +101,7 @@ autohome.com.cn##[class*="-finance"]
 autohome.com.cn##[class*="generalize-series"]
 autohome.com.cn##[class*="major-questionnaire"]
 autohome.com.cn##[class*="-minivideo"]
-autohome.com.cn##[class="homepage-heat"]
+autohome.com.cn##[class="homepage-heat"] !导航栏
 autohome.com.cn##[class*="recommend-video"]
 autohome.com.cn##[class*="summary-console"]
 autohome.com.cn##[class="athmays"]
