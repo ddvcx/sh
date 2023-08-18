@@ -8,6 +8,7 @@
 ||baidustatic.com
 ||doubleclick.net
 ||google-analytics.com
+||googlesyndication.com
 ||*/*-analytics.js
 ##[href*=".360.cn"]
 ##[href*="baidustatic.com"]
@@ -25,6 +26,8 @@
 ##[href*="/jd.dangbei"]
 ##[href*="//webgame.ali213"]
 ##[href*="//click.ali213"]
+##[src*="/pagead/"]
+##[src*="adsby"]
 ##[src*="ad-static-"]
 ##[src*="ad-material"]
 ##[src*="ajax.api"]
@@ -36,7 +39,7 @@
 ##[class*="-ad-"]
 ##[class*="_ad_"]
 ##[class*="_im_"]
-##[class*="adsbygoogle"]
+##[class*="adsby"]
 ##[class*="app-down"]
 ##[class*="topDownload"]
 ##[class*="downloadAPP"]
@@ -65,6 +68,7 @@
 ##.app-downtop
 ###newsletter
 ##.metaRedirectWrapperBottomAds
+
 !-----------------网站-----------------
 3dmgame.com##[class*="addapp"]
 3dmgame.com##[class*="addvide"]
@@ -101,7 +105,6 @@ autohome.com.cn##[class*="-finance"]
 autohome.com.cn##[class*="generalize-series"]
 autohome.com.cn##[class*="major-questionnaire"]
 autohome.com.cn##[class*="-minivideo"]
-autohome.com.cn##[class="homepage-heat"] !导航栏
 autohome.com.cn##[class*="recommend-video"]
 autohome.com.cn##[class*="summary-console"]
 autohome.com.cn##[class="athmays"]
@@ -119,6 +122,11 @@ autohome.com.cn##[id*="share__btn"]
 autohome.com.cn##[id*="skip-app"]
 autohome.com.cn##[src*="/admdfs/"]
 autohome.com.cn##[src*="/appdfs/"]
+autohome.com.cn##section>ol>li
+autohome.com.cn##[class*="homepage-heat"]
+autohome.com.cn##[src*="/newsdfs"]
+autohome.com.cn##[href*="//tuan"]
+autohome.com.cn##[class="athm-carousel"]
 baidu.com##[class*="_aside_float_bar"]
 baidu.com##[class*="-cashier-"]
 baidu.com##[class*="comp-banner"]
