@@ -122,11 +122,11 @@ autohome.com.cn##[id*="share__btn"]
 autohome.com.cn##[id*="skip-app"]
 autohome.com.cn##[src*="/admdfs/"]
 autohome.com.cn##[src*="/appdfs/"]
-autohome.com.cn##section>ol>li
 autohome.com.cn##[class*="homepage-heat"]
 autohome.com.cn##[src*="/newsdfs"]
 autohome.com.cn##[href*="//tuan"]
 autohome.com.cn##[class="athm-carousel"]
+autohome.com.cn##ol>li
 baidu.com##[class*="_aside_float_bar"]
 baidu.com##[class*="-cashier-"]
 baidu.com##[class*="comp-banner"]
