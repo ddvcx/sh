@@ -9,7 +9,7 @@ PROXY="http://192.168.0.125:8001"
 DIR="/home/d"
 REP_Immortal="ImmortalWrt"
 REP_URL_Immortal="https://github.com/immortalwrt/immortalwrt"
-TREE_Immortal="openwrt-23.05"
+TREE_Immortal="master" #openwrt-23.05
 DEVICE_AX6_Immortal="ipq807x"
 REP_LEDE="LEDE"
 REP_URL_LEDE="https://github.com/coolsnowwolf/lede"
@@ -161,7 +161,6 @@ COPY_AX6(){
 		echo "编译成功"
 		mv -f ${DIR_ROM_AX6}/*${DEVICE_AX6}*.bin ${DIR}/AX6_${REP}_${DATE}.bin
 		mv -f ${DIR_ROM_AX6}/*${DEVICE_AX6}*.ubi ${DIR}/AX6_${REP}_${DATE}.ubi
-		cp -fr ${DIR}/${REP}/${CONF} ${DIR}/${REP}/${CONF_AX6}
 		cp -fr ${DIR}/${REP}/${CONF_AX6} ${DIR}/${CONF_AX6}
 	else
 		echo "编译失败"
