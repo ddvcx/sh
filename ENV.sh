@@ -171,6 +171,7 @@ Install_Pre(){ #安装依赖
 	${INS} ${UNS} *vim* *apache*
 	${INS} autoremove
 	File=/etc/ssh/sshd_config && sed -i '\#PermitRootLogin #cPermitRootLogin yes' $File && sed -i '\#Port #cPort 222' $File && sed -i '\#ClientAliveInterval #cClientAliveInterval 30' $File && sed -i '\#ClientAliveCountMax #cClientAliveCountMax 60' $File && service ssh restart #修改SSH端口和ROOT登录
+	export EDITOR=nano #修改默认编辑器
 }
 
 Time_Sync(){ #同步服务器时间
