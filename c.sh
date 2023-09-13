@@ -289,10 +289,10 @@ Menu_C(){
 	PS3='请输入您的选择: '
 	echo ${LINE}
 	COLUMNS=1 #限制列数
-	select opt in ${EXE2}和PHP安装 ${EXE2}安装 ${EXE2}卸载 ${EXE2}修改设置 安装SSL证书 返回主菜单;
+	select opt in ${EXE2}安装 ${EXE2}卸载 ${EXE2}修改设置 安装SSL证书 返回主菜单;
 	do
 	case $opt in
-		${EXE2}和PHP安装)
+		${EXE2}安装)
 			echo "$opt"
 			Domain_Check
 			Port_Check
@@ -303,17 +303,6 @@ Menu_C(){
 			Install_Exe
 			Service_Set
 			Acme_Install
-			Service_On
-			Show_Status
-			Menu_C
-		;;
-		${EXE2}安装)
-			echo "$opt"
-			Domain_Check
-			Port_Check
-			UnInstall_Exe
-			Install_Exe
-			Service_Set
 			Service_On
 			Show_Status
 			Menu_C
