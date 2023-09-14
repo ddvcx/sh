@@ -95,8 +95,8 @@ UnInstall_Server(){
 	Service_Off
 	killall -9 ${EXE2} >/dev/null 2>&1
 	rm -fr ${DIR}/${EXE2}* >/dev/null 2>&1
-	rm -fr ${DIR_Service}/${EXE}* ${EXE}.service.d ${EXE}@.service.d >/dev/null 2>&1
-	rm -fr ${DIR_Service}/${EXE2}* ${EXE2}.service.d ${EXE2}@.service.d >/dev/null 2>&1
+	rm -fr ${DIR_Service}/${EXE}* ${EXE}*.service >/dev/null 2>&1
+	rm -fr ${DIR_Service}/${EXE2}* ${EXE2}.service >/dev/null 2>&1
 	rm -fr /var/log/${EXE2} /etc/init.d/${EXE2} /usr/local/etc/${EXE2} >/dev/null 2>&1
 	echo -e "Server 卸载已完成"
 }

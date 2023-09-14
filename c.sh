@@ -28,9 +28,9 @@ Service_Set(){
 After=network.target
 [Service]
 User=root
-ExecStart=${DIR}/${EXE2} run --adapter ${EXEC} --config=${DIR}/${EXEC}
-ExecReload=${DIR}/${EXE2} reload --adapter ${EXEC} --config=${DIR}/${EXEC} --force
-TimeoutStopSec=5s
+ExecStart=${DIR}/${EXE2} -conf ${DIR}/${EXEC} -agree=true
+ExecReload=/bin/kill -HUP Restart=on-failure
+RestartSec=3
 LimitNOFILE=infinity
 LimitNPROC=512
 [Install]
@@ -38,34 +38,27 @@ WantedBy=multi-user.target
 EOF
 	touch ${DIR}/${EXEC}  #生成配置, $Tls.crt $Tls.key
 	cat <<EOF > ${DIR}/${EXEC}
-{
-	https_port 4443
-	order replace after encode
-}
-(PHP) {
-	encode gzip
-	file_server
-	php_fastcgi localhost:9000
-}
 www.${Domain_Main}:${Port} {
+	gzip
 	redir http://${Domain_Main}:${Port}{uri}
 }
 ${Domain_Main}:${Port} {
-	root * /home/www
-	import PHP
+	gzip
+	root ${DIR}/www
+	fastcgi / localhost:9000 php {
+		env PATH /bin
+	}
 }
 n.${Domain_Main}:${Port} {
-	encode gzip
-	root * ${DIR}/www/note
-	import PHP
-	@X {
-		path_regexp X ^/([a-zA-Z0-9_-]+)$
+	gzip
+	root ${DIR}/www/note
+	fastcgi / localhost:9000 php {
+		env PATH /bin
 	}
-	rewrite @X /index.php?note={re.X.1}
-}
-f.${Domain_Main}:${Port} {
-	root * /home/www/file
-	import PHP
+	rewrite {
+		regexp ^/([a-zA-Z0-9_-]+)$
+		to {uri} {uri}/ /index.php?note={1}
+	}
 }
 EOF
 	CH
@@ -233,7 +226,7 @@ Menu_Main(){
 	PS3='请输入您的选择: '
 	echo ${LINE}
 	COLUMNS=1 #限制列数
-	select opt in ${EXE2}安装 XR安装 VS安装 SS安装 HY安装 安装依赖 启用BBR加速 停用BBR加速 重启服务器;
+	select opt in ${EXE2}安装 XR安装 SS安装 HY安装 安装依赖 启用BBR加速 停用BBR加速 重启服务器;
 	do
 	case $opt in
 		${EXE2}安装)
@@ -243,10 +236,6 @@ Menu_Main(){
 		XR安装)
 			echo "$opt"
 			bash <(${GET} http://github.com/ddvcx/sh/raw/m/x.sh)
-		;;
-		VS安装)
-			echo "$opt"
-			bash <(${GET} http://github.com/ddvcx/sh/raw/m/v.sh)
 		;;
 		SS安装)
 			echo "$opt"
