@@ -222,6 +222,7 @@ vsszan.com##.popupcredit
 vsszan.com##[class*="card-header"]
 youtube.com##[id*="masthead-ad"]
 youtube.com##root
+youtube.com##[class*="ytd-rich-shelf-renderer"]
 zaobao.com.sg##[class*="homepage-video"]
 zaobao.com.sg##[class*="podcast-widget"]
 zaobao.com.sg##[class="footer"]
