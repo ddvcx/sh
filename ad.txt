@@ -257,7 +257,7 @@ t66y.com##[data-link*="/game/"]
 t66y.com##[data-link*="/apxzh."]
 youtube.com##[id*="masthead-ad"]
 youtube.com##root
-youtube.com##[class="style-scope ytd-app"]
+!-页面无法加载 youtube.com##[class="style-scope ytd-app"]
 youtube.com##[class*="ytd-rich-shelf-renderer"]
 youtube.com##[class*="ytd-enforcement-message-view-mode"]
 v2ex.com##[class*="ads-cn"]
