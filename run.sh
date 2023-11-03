@@ -10,7 +10,7 @@ DIR="/home/d"
 REP_Immortal="ImmortalWrt"
 REP_URL_Immortal="https://github.com/immortalwrt/immortalwrt"
 TREE_Immortal="master" #openwrt-23.05/master
-DEVICE_AX6_Immortal="ipq807x"
+DEVICE_AX6_Immortal="qualcommax" #ipq807x/qualcommax
 REP_LEDE="LEDE"
 REP_URL_LEDE="https://github.com/coolsnowwolf/lede"
 TREE_LEDE="master"
@@ -63,8 +63,8 @@ DIY() { #修改配置文件
 	#sed -i '\@aa@cbb' ${F} #将包含的aa行替换为bb
 	#sed -i 's@aa@@g' ${F} #删除aa
 	#sed -i '\@aa@d' ${F} #删除包含aa的行
-	#sed -i 's@aa@bb&@' ${F} #在包含aa前增加bb
-	#sed -i 's@aa@&bb@' ${F} #在包含aa后增加bb
+	#sed -i 's@aa@bb&@' ${F} #在aa前增加bb
+	#sed -i 's@aa@&bb@' ${F} #在aa后增加bb
 	#sed -i '\@aa@a\bb' ${F} #在包含aa行后增加bb的行
 	#sed -i '$a\aa' ${F} #在末尾添加aa的行
 	#echo -e 'aa' >> ${F} #同上
@@ -84,7 +84,7 @@ DIY() { #修改配置文件
 	#sed -i 's@\(.*opp.*\)896000000\(.*\)@\1823000000\2@' ${F}
 	echo "修改默认软件包"
 	F=${DIR}/${REP}/include/target.mk
-	sed -i 's@coremark @@g' ${F}
+	sed -i 's@coremark @@g' ${F} #删除aa
 	sed -i 's@ddns-scripts_aliyun @@g' ${F}
 	sed -i 's@ddns-scripts_dnspod @@g' ${F}
 	sed -i 's@luci-app-ddns @@g' ${F}
@@ -96,13 +96,14 @@ DIY() { #修改配置文件
 	sed -i 's@luci-app-nlbwmon @@g' ${F}
 	sed -i 's@luci-app-wol @@g' ${F}
 	F=${DIR}/${REP}/target/linux/${DEVICE_AX6}/Makefile
-	sed -i 's@autocore-arm@& ipv6helper@' ${F}
+	sed -i 's@autocore-arm @@g' ${F} #删除aa
+	sed -i 's@ipv6helper @@g' ${F} #删除aa
 	sed -i 's@ramdisk @@g' ${F}
 	sed -i 's@htop @@g' ${F}
-	sed -i 's@luci-app-cpufreq@@g' ${F}
+	sed -i 's@luci-app-cpufreq @@g' ${F}
 	sed -i 's@luci-app-ipsec-vpnd @@g' ${F}
 	sed -i 's@luci-app-unblockmusic @@g' ${F}
-	sed -i 's@luci-app-zerotier@@g' ${F}
+	sed -i 's@luci-app-zerotier @@g' ${F}
 }
 
 AX6(){
@@ -242,7 +243,7 @@ Immortal() {
     do case $opt in
         克隆源码)
 			CLONE
-			AX6
+			#AX6
 			DIY
 			Immortal
         ;;
