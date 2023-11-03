@@ -96,7 +96,8 @@ archdaily.*##js-afd-newsletter
 archdaily.com##footer-alert
 archdaily.com##js-cn-modal
 !-页面缩略图 autohome.com.cn##[src*="/newsdfs"]
-!-VR看车 autohome.com.cn##ol>li
+!-无法显示VR看车 autohome.com.cn##ol>li
+autohome.com.cn##[class*="-popup"]
 autohome.com.cn##[appid="ogc"]
 autohome.com.cn##[class*="adv-"]
 autohome.com.cn##[class*="athm-btn--bright"]
