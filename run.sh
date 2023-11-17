@@ -9,7 +9,7 @@ PROXY="http://192.168.0.125:8001"
 DIR="/home/d"
 REP_Immortal="ImmortalWrt"
 REP_URL_Immortal="https://github.com/immortalwrt/immortalwrt"
-TREE_Immortal="master" #openwrt-23.05/master
+TREE_Immortal="openwrt-23.05" #openwrt-23.05/master
 DEVICE_AX6_1="ipq807x"
 DEVICE_AX6_2="qualcommax"
 REP_LEDE="LEDE"
@@ -49,8 +49,8 @@ Update(){
 
 DIY() { #修改配置文件
 	echo "添加优惠券"
-	sed -i '\@homeproxy@d' feeds.conf.default
-	sed -i '$a\src-git homeproxy https://github.com/uingei/homeproxy' feeds.conf.default
+	#sed -i '\@homeproxy@d' feeds.conf.default
+	#sed -i '$a\src-git homeproxy https://github.com/uingei/homeproxy' feeds.conf.default
 	./scripts/feeds update -a
 	./scripts/feeds install -a
 	#sed使用\符号作为转义符，\\\表示一个\，插入多行添加换行符\n
@@ -235,7 +235,7 @@ Immortal() {
 	REP="${REP_Immortal}"
 	REP_URL="${REP_URL_Immortal}"
 	TREE="${TREE_Immortal}"
-	DEVICE_AX6="${DEVICE_AX6_2}"
+	DEVICE_AX6="${DEVICE_AX6_1}"
 	DIR_PACKAGE="${DIR}/${REP}/package"
 	DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/${DEVICE_AX6_1}"
 	LINE
@@ -251,6 +251,7 @@ Immortal() {
 			LINE
 			cd ${DIR}/${REP}
 			GIT_PULL
+			#AX6
 			DIY
 			Immortal
         ;;
@@ -294,9 +295,10 @@ LEDE() {
 	REP="${REP_LEDE}"
 	REP_URL="${REP_URL_LEDE}"
 	TREE="${TREE_LEDE}"
-	DEVICE_AX6="${DEVICE_AX6_1}"
+	DEVICE_AX6="${DEVICE_AX6_1}" #23.05
+	#DEVICE_AX6="${DEVICE_AX6_2}" #Master
 	DIR_PACKAGE="${DIR}/${REP}/package"
-	DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6_1}/generic"
+	DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/generic"
 	LINE
 	select opt in 克隆源码 更新代码/修改设置 配置参数 编译AX6 编译/单线程 修改目录权限 删除目录;
     do case $opt in
