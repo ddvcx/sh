@@ -235,9 +235,10 @@ Immortal() {
 	REP="${REP_Immortal}"
 	REP_URL="${REP_URL_Immortal}"
 	TREE="${TREE_Immortal}"
-	DEVICE_AX6="${DEVICE_AX6_1}"
+	DEVICE_AX6="${DEVICE_AX6_1}" #23.05
 	DIR_PACKAGE="${DIR}/${REP}/package"
-	DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/${DEVICE_AX6_1}"
+	#DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/${DEVICE_AX6_1}" #master
+	DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/generic" #23.05
 	LINE
 	select opt in 克隆源码 更新代码/修改设置 配置参数 编译AX6 编译/单线程 修改目录权限 删除目录;
     do case $opt in
