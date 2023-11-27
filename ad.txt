@@ -86,6 +86,7 @@
 58.com##[src*="/app/"]
 ali213.net##[class*="buyRent"]
 ali213.net##[class*="divShow"]
+appinn.com##[class*="featured-section"]
 anjuke.com##[class*="component-tel"]
 anjuke.com##[class*="download_"]
 anjuke.com##[class*="-phone"]
