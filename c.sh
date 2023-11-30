@@ -49,6 +49,16 @@ ${Domain_Main}:${Port} {
 		env PATH /bin
 	}
 }
+d.${Domain_Main}:${Port} {
+	gzip
+	root /home/www/dav
+	basicauth / user password
+	timeouts none
+	webdav / {
+		scope /home/www/dav
+		allow /
+	}
+}
 n.${Domain_Main}:${Port} {
 	gzip
 	root ${DIR}/www/note
