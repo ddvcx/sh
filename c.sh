@@ -32,7 +32,6 @@ ExecStart=${DIR}/${EXE2} -conf ${DIR}/${EXEC} -agree=true
 ExecReload=/bin/kill -HUP Restart=on-failure
 RestartSec=3
 LimitNOFILE=infinity
-LimitNPROC=512
 [Install]
 WantedBy=multi-user.target
 EOF
