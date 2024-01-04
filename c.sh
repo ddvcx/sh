@@ -48,27 +48,6 @@ ${Domain_Main}:${Port} {
 		env PATH /bin
 	}
 }
-d.${Domain_Main}:${Port} {
-	gzip
-	root /home/www/dav
-	basicauth / user password
-	timeouts none
-	webdav / {
-		scope /home/www/dav
-		allow /
-	}
-}
-n.${Domain_Main}:${Port} {
-	gzip
-	root ${DIR}/www/note
-	fastcgi / localhost:9000 php {
-		env PATH /bin
-	}
-	rewrite {
-		regexp ^/([a-zA-Z0-9_-]+)$
-		to {uri} {uri}/ /index.php?note={1}
-	}
-}
 EOF
 	CH
 }
