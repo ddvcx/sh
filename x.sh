@@ -109,9 +109,9 @@ Install_Server(){
 	UnInstall_Server
 	Download
 	Service_Set
+	Service_On
 	echo -e "安装完成"
 	Show_Status
-	Service_On
 }
 
 Update_Server(){
@@ -121,12 +121,14 @@ Update_Server(){
 		Install_Server
 	else
 		echo -e "正在更新${EXE2}"
-		mv -f ${DIR}/${EXE2}.json ${DIR}/bak
+		mv -f ${DIR}/${EXE2}.json ${DIR}/bak/${EXE2}.json
 		UnInstall_Server
 		Download
 		Service_Set
-		mv -f ${DIR}/bak ${DIR}/${EXE2}.json
+		Service_On
+		mv -f ${DIR}/bak/${EXE2}.json ${DIR}/${EXE2}.json
 		echo -e "更新完成"
+		Show_Status
 	fi
 }
 
