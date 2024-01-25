@@ -94,7 +94,7 @@ UnInstall_Server(){
 	echo -e "正在卸载 ... "
 	Service_Off
 	killall -9 ${EXE2} >/dev/null 2>&1
-	rm -fr ${DIR}/${EXE2}* >/dev/null 2>&1
+	rm -f ${DIR}/${EXE2}* >/dev/null 2>&1
 	rm -fr ${DIR_Service}/${EXE}* ${EXE}*.service >/dev/null 2>&1
 	rm -fr ${DIR_Service}/${EXE2}* ${EXE2}.service >/dev/null 2>&1
 	rm -fr /var/log/${EXE2} /etc/init.d/${EXE2} /usr/local/etc/${EXE2} >/dev/null 2>&1
