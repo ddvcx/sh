@@ -214,22 +214,22 @@ Menu_Main(){
 	PS3='请输入您的选择: '
 	echo ${LINE}
 	COLUMNS=1 #限制列数
-	select opt in ${EXE2}安装 XR安装 SS安装 HY安装 安装依赖 启用BBR加速 停用BBR加速 重启服务器;
+	select opt in ${EXE2}安装 X安装 S安装 H安装 安装依赖 启用BBR加速 停用BBR加速 重启服务器;
 	do
 	case $opt in
 		${EXE2}安装)
 			echo "$opt"
 			Menu_C
 		;;
-		XR安装)
+		X安装)
 			echo "$opt"
 			bash <(${GET} http://github.com/ddvcx/sh/raw/m/x.sh)
 		;;
-		SS安装)
+		S安装)
 			echo "$opt"
 			bash <(${GET} http://github.com/ddvcx/sh/raw/m/s.sh)
 		;;
-		HY安装)
+		H安装)
 			echo "$opt"
 			bash <(${GET} http://github.com/ddvcx/sh/raw/m/h.sh)
 		;;

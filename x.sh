@@ -10,6 +10,7 @@ Download(){
 	bash <(${GET} ${URL}) #安装
 	sleep 1
 	mv -f /usr/local/bin/${EXE} ${DIR}/${EXE2}
+	#mv -f $DIR_Service/$EXE.service $DIR_Service/$EXE2.service
 	CH
 }
 
