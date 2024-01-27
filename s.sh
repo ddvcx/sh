@@ -38,56 +38,27 @@ EOF
 {
 	"inbounds": [
 		{
-			"port": 443,
-			"protocol": "vless",
-			"settings": {
-				"clients": [
-					{
-						"id": "$Password",
-						"flow": "xtls-rprx-vision"
-					}
-				],
-				"decryption": "none",
-				"fallbacks": [
-					{
-						"dest": 80
+			"type": "vless",
+			"listen": "::", //必须
+			"listen_port": $Port,
+			"users": [{"uuid": "$Password"}],
+			"tls": {
+				"enabled": true,
+				"server_name": "www.amazon.com", //偷取证书的域名，必须tls1.3和h2
+				"reality": {
+					"enabled": true,
+					"handshake": {
+						"server": "www.amazon.com", //偷取证书的域名
+						"server_port": $Port
 					},
-					{
-						"path": "/test",
-						"dest": $Port,
-						"xver": 1
-					}
-				]
-			},
-			"streamSettings": {
-				"network": "tcp",
-				"security": "tls",
-				"tlsSettings": {
-					"certificates": [
-						{
-							"certificateFile": "${Tls}.crt",
-							"keyFile": "${Tls}.key"
-						}
-					]
+					"private_key": "sOLFrT2UskC6ouVBKh4z0LfMsaRQhiMX5WJ9atdlQXE", //服务器私钥
+					//"public_Key": "XApBODNvW07mhPIM8uGcrVH60JlptEzoz0WCvGTyUzY", //客户端公钥，与私钥对应
+					"short_id": [""] //必须
 				}
 			}
 		}
 	],
-	"outbounds": [
-		{
-			"protocol": "freedom"
-		}
-	],
-	"routing": {
-		"domainStrategy": "AsIs",
-		"rules": [
-			{
-				"type": "field",
-				"outboundTag": "block",
-				"protocol": ["bittorrent"]
-			}
-		]
-	}
+	"outbounds": [{"type": "direct"}]
 }
 EOF
 	CH
@@ -181,11 +152,11 @@ Menu_Main
 action=$1
 [[ -z $1 ]] && action=install
 case "$action" in
-    install|uninstall)
-    ${action}_server
-    ;;
-    *)
-    echo "输入错误 !"
-    echo "用法: {install | uninstall}"
-    ;;
+	install|uninstall)
+	${action}_server
+	;;
+	*)
+	echo "输入错误 !"
+	echo "用法: {install | uninstall}"
+	;;
 esac
