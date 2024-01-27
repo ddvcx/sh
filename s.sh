@@ -41,6 +41,8 @@ EOF
 			"type": "vless",
 			"listen": "::", //必须
 			"listen_port": $Port,
+			"tcp_fast_open": true, //TCP快速打开
+			"udp_fragment": true, //UDP分段
 			"users": [{"uuid": "$Password"}],
 			"tls": {
 				"enabled": true,
