@@ -216,6 +216,6 @@ Menu_M(){ #主菜单
 
 Get_Tag(){ #获取版本号
 	TAG=$(${GET} https://api.github.com/repos/$REPO/releases | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g;s/v//g')
-	#TAG=$(curl -sL https://api.github.com/repos/caddyserver/caddy/releases/latest | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g;s/v//g') && echo ${TAG}
+	#TAG=$(curl -sL https://api.github.com/repos/XXX/XXX/releases/latest | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g;s/v//g') && echo ${TAG}
 	echo "准备安装${EXE2}-${TAG} "
 }
