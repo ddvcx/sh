@@ -10,7 +10,6 @@ URL="https://github.com/$REPO"
 Download(){
 	Get_Tag
 	curl -sLo "$EXE" $URL/releases/download/v${TAG}/${EXE}-${TAG}-linux-amd64.tar.gz
-	curl -sLo "$EXE" https://github.com/SagerNet/sing-box/releases/download/v1.8.4/sing-box-1.8.4-linux-amd64.tar.gz
 	tar -xvf ${EXE}-${TAG}-linux-amd64/$EXE #xz格式：xvf/gz格式：zxvf
 	mv -f $EXE $DIR/$EXE2
 	#mv -f $DIR_Service/$EXE.service $DIR_Service/$EXE2.service
@@ -28,7 +27,7 @@ User=root
 CapabilityBoundingSet=CAP_NET_BIND_SERVICE CAP_NET_RAW
 AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_NET_RAW
 NoNewPrivileges=true
-ExecStart="${DIR}/${EXE2}" run -config "${DIR}/${EXE2}.json" --format=json
+ExecStart="${DIR}/${EXE2}" run -c "${DIR}/${EXE2}.json"
 Restart=on-failure
 RestartSec=3
 [Install]
