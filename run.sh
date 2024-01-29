@@ -10,8 +10,8 @@ DIR="/home/d"
 REP_Immortal="ImmortalWrt"
 REP_URL_Immortal="https://github.com/immortalwrt/immortalwrt"
 TREE_Immortal="openwrt-23.05" #openwrt-23.05/master
-DEVICE_AX6_1="ipq807x"
-DEVICE_AX6_2="qualcommax"
+DEVICE_AX6_1="ipq807x" #23.05
+DEVICE_AX6_2="qualcommax" #master
 REP_LEDE="LEDE"
 REP_URL_LEDE="https://github.com/coolsnowwolf/lede"
 TREE_LEDE="master"
@@ -116,8 +116,7 @@ AX6(){
 		echo "已找到 红米AX6 设备信息"
 	else
 		echo "未找到 红米AX6 设备信息，正在添加..."
-		#curl -sLo "${DIR}/generic_ax6.mk" https://raw.githubusercontent.com/hochenchong/Actions-OpenWrt/main/ax6/generic.mk
-		cp -fr ${DIR}/generic_ax6.mk ${F}
+		curl -sLo "${DIR}/generic_ax6.mk" https://raw.githubusercontent.com/hochenchong/Actions-OpenWrt/main/ax6/generic.mk && cp -fr ${DIR}/generic_ax6.mk ${F}
 		if [ $? -eq 0 ]; then
 			echo "已找到 红米AX6 设备信息"
 		else
@@ -235,6 +234,7 @@ Immortal() {
 	REP="${REP_Immortal}"
 	REP_URL="${REP_URL_Immortal}"
 	TREE="${TREE_Immortal}"
+	#DEVICE_AX6="${DEVICE_AX6_2}" #master
 	DEVICE_AX6="${DEVICE_AX6_1}" #23.05
 	DIR_PACKAGE="${DIR}/${REP}/package"
 	#DIR_ROM_AX6="${DIR}/${REP}/bin/targets/${DEVICE_AX6}/${DEVICE_AX6_1}" #master
@@ -305,7 +305,7 @@ LEDE() {
     do case $opt in
         克隆源码)
 			CLONE
-			AX6
+			#AX6
 			DIY
 			LEDE
         ;;
@@ -313,7 +313,7 @@ LEDE() {
 			LINE
 			cd ${DIR}/${REP}
 			GIT_PULL
-			AX6
+			#AX6
 			DIY
 			LEDE
         ;;
