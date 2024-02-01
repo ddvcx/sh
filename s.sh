@@ -4,7 +4,7 @@ source <(curl -sL http://github.com/ddvcx/sh/raw/m/ENV.sh)
 
 EXE=sing-box
 EXE2=s
-REPO="apernet/$EXE"
+REPO="SagerNet/$EXE"
 URL="https://github.com/$REPO"
 
 Download(){
@@ -41,8 +41,6 @@ EOF
 			"type": "vless",
 			"listen": "::", //必须
 			"listen_port": $Port,
-			"tcp_fast_open": true, //TCP快速打开
-			"udp_fragment": true, //UDP分段
 			"users": [{"uuid": "$Password"}],
 			"tls": {
 				"enabled": true,
@@ -53,8 +51,8 @@ EOF
 						"server": "www.amazon.com", //偷取证书的域名
 						"server_port": $Port
 					},
-					"private_key": "sOLFrT2UskC6ouVBKh4z0LfMsaRQhiMX5WJ9atdlQXE", //服务器私钥
-					//"public_Key": "XApBODNvW07mhPIM8uGcrVH60JlptEzoz0WCvGTyUzY", //客户端公钥，与私钥对应
+					"private_key": "xxx", //服务器私钥
+					//"public_Key": "xxx", //客户端公钥，与私钥对应
 					"short_id": [""] //必须
 				}
 			}
