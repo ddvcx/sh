@@ -100,7 +100,7 @@ DIY() { #修改配置文件
 	sed -i 's@ipv6helper @@g' ${F} #删除aa
 	sed -i 's@ramdisk @@g' ${F}
 	sed -i 's@htop @@g' ${F}
-	sed -i 's@luci-app-cpufreq @@g' ${F}
+	sed -i 's@luci-app-cpufreq@@g' ${F}
 	sed -i 's@luci-app-ipsec-vpnd @@g' ${F}
 	sed -i 's@luci-app-unblockmusic @@g' ${F}
 	sed -i 's@luci-app-zerotier @@g' ${F}
@@ -161,7 +161,7 @@ COPY_AX6(){
 		echo "编译成功"
 		mv -f ${DIR_ROM_AX6}/*${DEVICE_AX6}*.bin ${DIR}/AX6_${REP}_${DATE}.bin
 		mv -f ${DIR_ROM_AX6}/*${DEVICE_AX6}*.ubi ${DIR}/AX6_${REP}_${DATE}.ubi
-		cp -fr ${DIR}/${REP}/${CONF_AX6} ${DIR}/${CONF_AX6}
+		cp -fr ${DIR}/${REP}/${CONF} ${DIR}/${CONF_AX6}
 	else
 		echo "编译失败"
 	fi
@@ -172,7 +172,7 @@ MAKE_AX6(){
 	cd ${DIR}/${REP}
 	if ls ${CONF_AX6} 1> /dev/null 2>&1; then
 		echo "复制配置文件"
-		cp -fr ${CONF_AX6} ${CONF}
+		cp -fr ${DIR}/${CONF_AX6} ${CONF_AX6}
 	else
 		echo "未找到配置文件"
 	fi
