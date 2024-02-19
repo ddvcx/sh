@@ -92,14 +92,14 @@ EOF
 }
 
 UnInstall_Server(){
-	echo -e "正在卸载 ... "
+	echo -e "卸载服务中... "
 	Service_Off
 	killall -9 ${EXE2} >/dev/null 2>&1
+	Clean
 	rm -f ${DIR}/${EXE2}* >/dev/null 2>&1
-	rm -fr ${DIR_Service}/${EXE}* ${EXE}*.service >/dev/null 2>&1
 	rm -fr ${DIR_Service}/${EXE2}* ${EXE2}.service >/dev/null 2>&1
 	rm -fr /var/log/${EXE2} /etc/init.d/${EXE2} /usr/local/etc/${EXE2} >/dev/null 2>&1
-	echo -e "Server 卸载已完成"
+	echo -e "Server 卸载完成"
 }
 
 Install_Server(){
@@ -111,6 +111,7 @@ Install_Server(){
 	Download
 	Service_Set
 	Service_On
+	Clean
 	echo -e "安装完成"
 	Show_Status
 }
@@ -125,9 +126,10 @@ Update_Server(){
 		mv -f ${DIR}/${EXE2}.json ${DIR}/bak/${EXE2}.json
 		UnInstall_Server
 		Download
+		mv -f ${DIR}/bak/${EXE2}.json ${DIR}/${EXE2}.json
 		Service_Set
 		Service_On
-		mv -f ${DIR}/bak/${EXE2}.json ${DIR}/${EXE2}.json
+		Clean
 		echo -e "更新完成"
 		Show_Status
 	fi

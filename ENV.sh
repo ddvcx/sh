@@ -174,6 +174,14 @@ Install_Pre(){ #安装依赖
 	export EDITOR=nano #修改默认编辑器
 }
 
+Clean(){
+	echo -e "清理残留中..."
+	rm -f ${DIR}/${EXE}* >/dev/null 2>&1
+	rm -fr ${DIR_Service}/${EXE}* ${EXE}*.service >/dev/null 2>&1
+	rm -fr /var/log/${EXE} /etc/init.d/${EXE} /usr/local/etc/${EXE} >/dev/null 2>&1
+	echo -e "清理完成"
+}
+
 Time_Sync(){ #同步服务器时间
 	cp -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime #修改时区
 	systemctl stop ntp &>/dev/null
