@@ -1,0 +1,75 @@
+name: Build OpenWrt
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 22 * * 0
+env:
+  REPO: immortalwrt
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: master
+  CONFIG_FILE: lede-ax6.config
+  DEVICE: ipq807x
+  DEVICE_NAME: ax6
+  DIR: /workdir
+  DIY: lede.sh
+  TZ: Asia/Shanghai
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Initialization Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt -y update
+        sudo -E apt -y install libtool libtool-bin cmake gperf gawk bison xxd cpio gettext help2man pkg-config libgmp3-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 libncurses5-dev libz-dev patch unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs gcc-multilib p7zip p7zip-full rsync msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils libelf-dev autoconf automake  autopoint device-tree-compiler psmisc iptables jq netcat-openbsd screen socat 
+        sudo -E apt -y autoremove --purge
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -m 777 -p $DIR
+        echo "$(date +%y%m%d)" > ./date_tmp.txt && echo "DATE=$(cat ./date_tmp.txt)" >> $GITHUB_ENV
+    - name: Clone Source Code
+      working-directory: ${{ env.DIR }}
+      run: |
+        git clone $REPO_URL -b $REPO_BRANCH $REPO
+        ln -sf $DIR/$REPO $GITHUB_WORKSPACE/$REPO
+    - name: Update & Install Feeds
+      run: |
+        cd $REPO
+        echo "DIR=$PWD" >> $GITHUB_ENV
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+    - name: Load Custom Configuration
+      run: |
+        [ -e files ] && mv files $DIR/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $DIR/.config
+        chmod +x $DIY
+        cd $DIR
+        $GITHUB_WORKSPACE/$DIY
+    - name: Download Package
+      run: |
+        cd $DIR
+        make defconfig
+        make download -j$(nproc)
+    - name: Compile Firmware
+      run: |
+        cd $DIR
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+    - name: Clean Files
+      run: |
+        cd $DIR/bin/targets/*/*
+        rm -rf packages *.buildinfo *.manifest *.json sha256*
+        echo "FILE_PATH=$PWD" >> $GITHUB_ENV
+        mv -f ./*$DEVICE_NAME*.bin ./${{ env.REPO }}-${{ env.DEVICE_NAME }}-${{ env.DATE }}.bin
+        mv -f ./*$DEVICE_NAME*.ubi ./${{ env.REPO }}-${{ env.DEVICE_NAME }}-${{ env.DATE }}.ubi
+        cp -fr $DIR/.config ./$CONFIG_FILE
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.REPO }}-${{ env.DEVICE_NAME }}-${{ env.DATE }}
+        path: ${{ env.FILE_PATH }}
