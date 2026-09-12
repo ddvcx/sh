@@ -11,16 +11,10 @@
 (function () {
     'use strict';
     const keywords = [
-<<<<<<< HEAD
-        "公告[\\s\\S]{0,100}(?:禁止|格式|版规)|(?:禁止|格式|版规)[\\s\\S]{0,100}公告",
-        "3DM版务",
-        "beyiku", "vonder", "爱在黑夜", "wwg101", "arsenal-fan", "第六天魔王", "萌你一脸", "吃鸡大神", "日日新爱", "六岁抬头",
-=======
         "公告禁止", "公告版规", "公告格式", "administrator",
         "3DM版务",
-        "AVhunter", "吃雞大神", "愛在黑夜", // t66y 愛在黑夜
+        "AVhunter", "吃雞大神", "愛在黑夜", "wwg101", // t66y 愛在黑夜
 
->>>>>>> origin/m
         "GenW"
     ];
     const regex = new RegExp(keywords.join('|'), 'i');
