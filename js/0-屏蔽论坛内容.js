@@ -13,8 +13,7 @@
     const keywords = [
         "公告禁止", "公告版规", "公告格式", "administrator",
         "3DM版务",
-        "AVhunter", "吃雞大神", "愛在黑夜", "wwg101", // t66y 愛在黑夜
-
+        "arsenal-fan", "AVhunter", "吃雞大神", "愛在黑夜", "wwg101", "beyiku", // t66y 
         "GenW"
     ];
     const regex = new RegExp(keywords.join('|'), 'i');
