@@ -1,4 +1,4 @@
-	DEVICE="ipq807x"
+	DEVICE="qualcommax"
 	echo "修改时区和默认IP"
 	F=package/base-files/files/bin/config_generate
 	sed -i 's@\(.*timezone.*\)UTC\(.*\)@\1CST-8\2@' ${F}
