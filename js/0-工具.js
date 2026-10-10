@@ -435,12 +435,29 @@ const C = {
 
     // 页面保活
     let aliveTimer;
-    function toggleAlive() {
-        clearTimeout(aliveTimer);
-        if(!State.alive) return;
-        aliveTimer = setTimeout(() => {
-            location.reload();
-        }, C.Alive * 1000);
+    let aliveWorker; // 后台防节流 Worker
+    let aliveTargetTime = 0; // 预计刷新时间戳
+    function clearAliveTimer() {
+        if (aliveTimer) { clearTimeout(aliveTimer); aliveTimer = null; }
+        if (aliveWorker) { aliveWorker.terminate(); aliveWorker = null; }
     }
+    function toggleAlive() {
+        clearAliveTimer();
+        if(!State.alive) return;
+        const delayMs = C.Alive * 1000;
+        aliveTargetTime = Date.now() + delayMs;
+        try {
+            const blob = new Blob([`setTimeout(() => postMessage(0), ${delayMs});`], { type: 'application/javascript' });
+            aliveWorker = new Worker(URL.createObjectURL(blob));
+            aliveWorker.onmessage = () => { location.reload(); };
+        } catch(e) {
+            aliveTimer = setTimeout(() => { location.reload(); }, delayMs);
+        }
+    }
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && State.alive && aliveTargetTime && Date.now() >= aliveTargetTime) {
+            location.reload();
+        }
+    });
     init();
 })();
