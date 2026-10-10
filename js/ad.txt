@@ -349,6 +349,7 @@ v2ex.com##[class*="inner"]
 v2ex.com##[class*="sidebar_compliance"]
 v2ex.com##[href*="/advertise"]
 vikacg.com##[class="arco-modal-mask"]
+vikacg.com##[class="arco-modal-container"]
 vsszan.com##.popupcredit
 vsszan.com##[class*="card-header"]
 zaobao.com.sg##[class*="homepage-video"]
