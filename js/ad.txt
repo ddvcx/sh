@@ -190,13 +190,10 @@ baidu.com##[srcid*="b2b_"]
 baidu.com##[srcid*="sp_purc_"]
 baidu.com##[tpl*="recommend_list"]
 baidu.com##[class*="nd-operate-guidance"]
-<<<<<<< HEAD
-=======
 baidu.com##[class*="-backflow-defensive"]
 baidu.com##[class*="-btn-wake"]
 baidu.com##[class*="wake-app btn"]
 baidu.com##[class*="open-app"]
->>>>>>> origin/m
 bbc.com##[aria-label*="广告"]
 bilibili.com##[class*="-app-"]
 bilibili.com##[href*="/cm/"]
@@ -338,10 +335,7 @@ shana.pe.kr##[class*="modal"]
 soft128.com##[class*="steambig"]
 t66y.com##[data-link*="tapdb.net"]
 t66y.com##[data-link*="v93.vip"]
-<<<<<<< HEAD
 t66y.com##[href*="redircdn.com"]
-=======
->>>>>>> origin/m
 t66y.com##[data-link*="/game/"]
 t66y.com##[data-link*="/apxzh."]
 youtube.com##[id*="masthead-ad"]
@@ -354,7 +348,7 @@ v2ex.com##[class*="ads-cn"]
 v2ex.com##[class*="inner"]
 v2ex.com##[class*="sidebar_compliance"]
 v2ex.com##[href*="/advertise"]
-vikacg.com##[class*="arco-modal-mask"]
+vikacg.com##[class="arco-modal-mask"]
 vsszan.com##.popupcredit
 vsszan.com##[class*="card-header"]
 zaobao.com.sg##[class*="homepage-video"]
@@ -363,10 +357,7 @@ zaobao.com.sg##[class="footer"]
 zaobao.com.sg##[href*="/news/sea"]
 zaobao.com.sg##[href*="/news/singapore"]
 zaobao.com.sg##[href*="/videos"]
-<<<<<<< HEAD
-=======
 zhihu.com##[class="MobileModal-backdrop"]
->>>>>>> origin/m
 zhujiceping.com##[class*="header-sub"]
 zhujiceping.com##[class*="tg-site"]
 zhujiceping.com##[class*="orbui-"]
