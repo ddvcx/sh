@@ -25,10 +25,10 @@ const C = {
     ],
     Res: "720p",              // 视频画质
     Speed: 1.1,                // 视频速度
-    Alive: 300,                 // 保活间隔(秒)
+    Alive: 300,                 // 刷新间隔(秒)
     Retries: 10,                // 视频设置重试次数
     Delay: 500,                 // 视频设置延迟(毫秒)
-    MaxVisited: 5000            // 单域名最多保留的已访问链接记录数(超出后清理最早记录)
+    MaxVisited: 3000            // 单域名最多保留的已访问链接记录数(超出后清理最早记录)
 };
 (function() {
     'use strict';
@@ -40,7 +40,7 @@ const C = {
         video:   ['视频设置', true],
         unlock:  ['解除限制', true],
         paste:   ['强力粘贴', false],
-        alive:   ['页面保活', false]
+        alive:   ['自动刷新', false]
     };
     function init() {
         Object.keys(Menus).forEach(k => {
