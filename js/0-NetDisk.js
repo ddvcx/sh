@@ -2337,76 +2337,105 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 		async getLink() {
 			let selectList = this.getSelectedList();
 			if (selectList.length === 0) return message.error("提示：<br/>请勾选要下载的文件哦~");
-			if (selectList.every(item => item.Type !== 0)) return message.error("提示：<br/>请打开文件夹后再勾选文件~");
-			if (temp.page !== "home" && temp.page !== "share") return message.error("提示：<br/>页面错误~");
-
-			let token = this.getToken();
-			let batchSize = 15;
-			let processed = 0;
-			selectList = selectList.filter(item => item.Type === 0);
-			let ShareKey = (temp.page === "share") ? location.pathname.split("/").filter(Boolean)[1] : undefined;
-			$doc.find(".loading-popup .loading-title").html(`链接获取中`);
-			$doc.find(".loading-popup .swal2-html-container").html(`<div>正在获取文件对应的下载链接~</div>`);
-
-			for (let i = 0; i < selectList.length; i += batchSize) {
-				let batch = selectList.slice(i, i + batchSize);
-				let queue = [];
-				batch.forEach((item, localIndex) => {
-					let globalIndex = i + localIndex;
-					queue.push(this.getFileUrl(item, globalIndex, token, ShareKey)
-						.then(val => {
-							processed++;
-							$doc.find(".loading-popup .swal2-html-container").html(`<div>已获取 ${processed} / ${selectList.length} 个链接~</div>`);
-							return val;
-						}));
-				});
-				let res = await Promise.all(queue);
-				res.forEach(val => {
-					selectList[val.index].DownloadUrl = val.downloadUrl;
-				});
-				await base.sleep(1000);
+			let accessToken = (base.getValue("baidu_access_token") || await temp.main.getToken());
+			if (!accessToken) {
+				message.info("提示：<br/>稍后请在新标签页中授权助手哦~");
+				base.delValue("baidu_access_token");
+				await base.sleep(3300);
+				GM_openInTab(config.$baidu.api.getAccessToken, { active: true, insert: true, setParent: true });
+				let attempts = 0;
+				let interval = setInterval(() => {
+					if (!!base.getValue("baidu_access_token")) {
+						clearInterval(interval);
+						accessToken = base.getValue("baidu_access_token");
+					}
+					attempts++;
+					if (attempts > 120) {
+						clearInterval(interval);
+						return message.error("提示：<br/>时间太长，我先撤下啦~");
+					}
+				}, 1000);
+				return;
 			}
-			temp.links = [selectList, {
-				isFolder: v => v.Type !== 0,
-				getFileName: v => v.FileName,
-				getFileSize: v => v.Size,
-				getFileLink: v => v.DownloadUrl || v.DownloadURL,
-			}];
-			base.showMainDialog(config.base.dom.button[temp.mode].title, base.generateDom(temp.links), config.base.dom.button[temp.mode].footer);
-		},
-		async getFileUrl(d, f) {
-			let res = await base.post(config.$aliyun.api.getLink, { drive_id: d, file_id: f }, { "Content-Type": "application/json", "Authorization": `${base.getStorage("token").token_type} ${base.getStorage("token").access_token}`, "X-Canary": "client=windows,app=adrive,version=v6.0.0" });
-			if (res.code == "AccessTokenInvalid") {
-				return message.error("提示：<br/>访问令牌过期了，请刷新网页后再试");
+			if (temp.page === "home" || temp.page === "main") {
+				let files = selectList.filter(f => !f.isdir);
+				let dirs = selectList.filter(f => f.isdir);
+				if (dirs.length > 0) files = files.concat(await this.getFilesList(dirs, accessToken, files.length));
+				if (!files.length) return message.error("提示：<br/>文件夹是空的哦~");
+				$doc.find(".loading-popup .loading-title").html(`链接获取中`);
+				$doc.find(".loading-popup .swal2-html-container").html(`<div>正在获取文件对应的下载链接~</div>`);
+				files = await this.getFilesUrl(files, accessToken);
+				if (base.isType(files) === "array" && files.length) {
+					temp.links = [files, {
+						isFolder: v => v.isdir === 1,
+						getFileName: v => (v.server_filename || v.filename),
+						getFileSize: v => v.size,
+						getFileLink: v => {
+							if (!v.dlink || !v.dlink.startsWith("http")) return v.dlink;
+							let url = new URL(v.dlink);
+							url.searchParams.set("access_token", accessToken);
+							return url.href;
+						},
+						convert: {
+							aria2: `--header "User-Agent:${config.$baidu.api.ua.downloadLink}"`
+						}
+					}];
+					base.showMainDialog(config.base.dom.button[temp.mode].title, base.generateDom(temp.links), config.base.dom.button[temp.mode].footer);
+				} else {
+					return message.error("提示：<br/>获取下载链接失败，刷新网页后再试试吧~");
+				}
+			} else if (temp.page === "share") {
+				let files = selectList.filter(f => !f.isdir);
+				let data = await this.getShareData();
+				let sign = await base.get(`${config.$baidu.api.getShareSign}&surl=1${data.share.url}$bdstoken=${data.baidu.token}&logid=${base.encodeBase(data.baidu.id)}`);
+				if (sign?.data?.sign && sign?.data?.timestamp) {
+					data.sign = sign.data.sign;
+					data.timestamp = sign.data.timestamp;
+				}
+				files = await this.getShareFileUrl(files, data, accessToken);
+				if (base.isType(files) === "array" && files.length) {
+					temp.links = [files, {
+						isFolder: v => v.isdir === 1,
+						getFileName: v => (v.server_filename || v.filename),
+						getFileSize: v => v.size,
+						getFileLink: v => {
+							if (!v.dlink || !v.dlink.startsWith("http")) return v.dlink;
+							let url = new URL(v.dlink);
+							url.searchParams.set("access_token", accessToken);
+							return url.href;
+						},
+						convert: {
+							aria2: `--header "User-Agent:${config.$baidu.api.ua.downloadLink}"`
+						}
+					}];
+					base.showMainDialog(config.base.dom.button[temp.mode].title, base.generateDom(temp.links), config.base.dom.button[temp.mode].footer);
+				} else {
+					return message.error("提示：<br/>获取下载链接失败，刷新网页后再试试吧~");
+				}
+			} else {
+				return message.error("提示：<br/>页面错误~");
 			}
-			if (res.url) {
-				return res.url;
-			}
-			return "";
 		},
 		getSelectedList() {
 			try {
-				let selectedList = [];
-				let reactDom = document.querySelector(config.$aliyun.mount.list);
-				let reactObj = base.findReact(reactDom, 1);
-				let props = reactObj.pendingProps;
-				if (props) {
-					let fileList = props.dataSource || [];
-					let selectedKeys = props.selectedKeys.split(",");
-					fileList.forEach(function (val) {
-						if (selectedKeys.includes(val.fileId)) {
-							selectedList.push(val);
-						}
-					});
-				}
-				return selectedList;
+				let list = [];
+				let fileList = unsafeWindow.document.querySelector(".file-list");
+				if (fileList?.__vue__?.allFileList?.[0]) list = fileList.__vue__.allFileList.filter(function (item) { return !!item.selected; });
+				let wpCore = unsafeWindow.document.querySelector(".wp-s-core-pan");
+				if (wpCore?.__vue__?.selectedList?.[0]) list = wpCore.__vue__.selectedList;
+				let context = unsafeWindow.require?.("system-core:context/context.js");
+				if (context?.instanceForSystem?.list?.getSelected?.()?.[0]) list = context.instanceForSystem.list.getSelected();
+				return base.clone(list);
 			} catch (e) {
+				console.error(e);
 				return [];
 			}
 		},
 		detectPage() {
 			let path = location.pathname;
-			if (/^\/(drive)/.test(path)) return "home";
+			if (/^\/disk\/home/.test(path)) return "home";
+			if (/^\/disk\/main/.test(path)) return "main";
+			if (/^\/youth\/pan\/main/.test(path)) return "youth";
 			if (/^\/(s|share)\//.test(path)) return "share";
 			return "";
 		},
@@ -2415,6 +2444,134 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			this.addButton();
 			this.addPageListener();
 		},
+	};
+
+	let $baiduAuthorize = {
+		async initPanLinker() {
+			base.registerMenuCommand();
+			Swal.fire({
+				...temp.swalDefault,
+				showConfirmButton: false,
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				allowEnterKey: false,
+				html: `请稍后`,
+				willOpen: () => {
+					Swal.showLoading();
+				},
+			});
+			let url = new URL(location);
+			let auth = new URL(config.$baidu.api.getAccessToken);
+			let allowedClientIds = [
+				auth.searchParams.get("client_id"),
+				"L6g70tBRRIXLsY0Z3HwKqlRE",
+				"NqOMXF6XGhGRIGemsQ9nG0Na",
+				"fSds3K4w43rw37tOqlQmTa2kDwaczK4U",
+				"TFwtw8uwHxpdkvVqVKdIlx1XqXUnr1zG",
+				"9dgBV9yesuBVOXaxls7aVHbLBLqU8yyg",
+				"l9DdBOG4RYroMscmzK5OChdaGelgd92M",
+				"Kyr013gHQBf2immy3fQt1jZ3nZVpiGAm",
+				"iYCeC9g08h5vuP9UqvPHKKSVrKFXGa1v",
+				"omiOnr2tYnN9vSyDErcVFWpPU2mZA7YO",
+				"QHOuRXiepJBMjtk0esLhrPoNlQyYd0mF",
+				"IlLqBbU3GjQ0t46TRwFateTprHWl39zF",
+				"iG6ghsi9r0RR0jTFCrlvTjX9",
+				"YgMAXXnP0Lziw0LPVbc6E4zm",
+			];
+			if (
+				/openapi.baidu.com\/oauth\/2.0\/authorize/.test(location.href) &&
+				url.searchParams.get("response_type").includes("token") &&
+				url.searchParams.get("scope").includes("netdisk") &&
+				allowedClientIds.includes(url.searchParams.get("client_id"))
+			) {
+				var dialog = await Swal.fire({
+					...temp.swalDefault,
+					icon: "info",
+					title: `提示`,
+					html: `<p>(◍•ᴗ•◍) 你好呀，为了获取百度网盘文件的下载直链<br/>“下载助手” 需要你的授权，以获取网盘文件的访问令牌</p><br/>
+					<p>由于在百度 OAuth 页面使用了其他应用的 Client ID<br/>所以显示的应用名称可能会有所不同，敬请理解</p><br/>
+					<p>获取到的令牌仅用于调用百度网盘 API 生成直链<br/>不会用于其他用途，请放心授权</p>`,
+					showConfirmButton: true,
+					showDenyButton: true,
+					allowOutsideClick: false,
+					allowEscapeKey: false,
+					allowEnterKey: false,
+					confirmButtonText: `授权`,
+					denyButtonText: `再想想`,
+					position: "center"
+				});
+				if (dialog.isConfirmed) {
+					base.waitForKeyElements("button#auth-allow", function (element) {
+						element[0].click();
+					}, true);
+					return;
+				}
+				if (dialog.isDenied) {
+					return await Swal.fire({
+						...temp.swalDefault,
+						icon: "question",
+						title: `好吧(*￣3￣)╭`,
+						html: "那就再想一想<br/>想好了就按下 “授权” 按钮吧~",
+						timer: 180000,
+						toast: true,
+						timerProgressBar: true,
+						showConfirmButton: false,
+						showDenyButton: false,
+						position: "bottom-end",
+					});
+				}
+			} else if (/openapi.baidu.com\/oauth\/2.0\/login_success/.test(location.href)) {
+				let int = setInterval(async () => {
+					if (location.href.includes("access_token") && (location.href.includes("basic+netdisk") || location.href.includes("basic,netdisk"))) {
+						clearInterval(int);
+						let token = location.href.match(/access_token=(.*?)&/)[1];
+						base.setValue("baidu_access_token", token);
+						await Swal.fire({
+							...temp.swalDefault,
+							icon: "success",
+							title: `成功啦`,
+							html: `<p>(◍•ᴗ•◍) 您已<b>成功授权/授权过</b>脚本获取网盘访问令牌~</p><p>获取到的令牌<b>仅用于调用百度网盘 API 生成直链</b><br/>不会用于其他用途</p><p>等待 <span id="second">/</span> 秒之后将关闭此页面</p>`,
+							timer: 5000,
+							timerProgressBar: true,
+							showConfirmButton: true,
+							showDenyButton: false,
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false,
+							confirmButtonText: `关闭`,
+							willOpen: () => {
+								let secondSpan = document.getElementById("second");
+								let interval = setInterval(() => {
+									if (Swal.isVisible()) {
+										let timeLeft = Swal.getTimerLeft();
+										if (timeLeft !== null && timeLeft > 0) {
+											secondSpan.textContent = (timeLeft / 1000).toFixed(2);
+										}
+									} else {
+										clearInterval(interval);
+									}
+								}, 10);
+							},
+							didOpen: function (toast) {
+								toast.addEventListener("mouseenter", () => {
+									Swal.stopTimer();
+								});
+								toast.addEventListener("mouseleave", () => {
+									Swal.resumeTimer();
+								});
+							},
+							willClose: () => window.close()
+						});
+						return window.close();
+					} else {
+						clearInterval(int);
+						Swal.close();
+					}
+				}, 1);
+			} else {
+				Swal.close();
+			}
+		}
 	};
 
 	let $tcloud = {
