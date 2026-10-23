@@ -150,14 +150,8 @@
 		error: function (text) {
 			toast.fire({ title: text, icon: "error" });
 		},
-		warning: function (text) {
-			toast.fire({ title: text, icon: "warning" });
-		},
 		info: function (text) {
 			toast.fire({ title: text, icon: "info" });
-		},
-		question: function (text) {
-			toast.fire({ title: text, icon: "question" });
 		}
 	};
 
@@ -211,9 +205,7 @@
 				getLink: "https://pan.baidu.com/rest/2.0/xpan/multimedia?method=filemetas&dlink=1",
 				getFiles: "https://pan.baidu.com/rest/2.0/xpan/file?method=list&showempty=1",
 				getShareLink: "https://pan.baidu.com/api/sharedownload?channel=chunlei&clienttype=0&web=1&app_id=250528",
-				getShareSign: "https://pan.baidu.com/share/tplconfig?fields=sign,timestamp&channel=chunlei&web=1&app_id=250528&clienttype=0&view_mode=1",
-				getShareVerify: "https://pan.baidu.com/share/verify?channel=chunlei&clienttype=0&web=1&app_id=250528",
-				getShareFiles: "https://pan.baidu.com/rest/2.0/xpan/share?method=list&showempty=1"
+				getShareSign: "https://pan.baidu.com/share/tplconfig?fields=sign,timestamp&channel=chunlei&web=1&app_id=250528&clienttype=0&view_mode=1"
 			},
 			mount: {
 				home: ".frame-main>div>div>div>div:has(.g-dropdown-button.g-new-create)",
@@ -283,9 +275,6 @@
 			GM_registerMenuCommand("🍃️ 美化", () => {
 				base.showBeautify();
 			});
-			GM_registerMenuCommand("📃 更新", () => {
-				base.showUpdate();
-			});
 			GM_registerMenuCommand("🛠️ 调试", () => {
 				base.showDebug();
 			});
@@ -351,14 +340,6 @@
 			return str;
 		},
 
-		timeFormat(i) {
-			if (i >= 0 && i <= 9) {
-				return "0" + i;
-			} else {
-				return i;
-			}
-		},
-
 		sizeFormat(value = 0) {
 			var sizeUnitBase = 1024
 			try { value = Number(value) } catch { }
@@ -382,16 +363,6 @@
 				return `${formattedSize}${unitNames[index]}(${units[index]})`;
 			}
 			return "";
-		},
-
-		sortByName(arr) {
-			arr.sort(() => {
-				return (a, b) => {
-					let p1 = a.filename ? a.filename : a.server_filename;
-					let p2 = b.filename ? b.filename : b.server_filename;
-					return p1.localeCompare(p2, "zh-CN");
-				};
-			});
 		},
 
 		fixFilename(name) {
@@ -841,19 +812,6 @@
 			return new Promise(resolve => setTimeout(resolve, time));
 		},
 
-		isNewerVersion(a, b) {
-			let partsA = a.split(".").map(Number);
-			let partsB = b.split(".").map(Number);
-			let maxLength = Math.max(partsA.length, partsB.length);
-			for (let i = 0; i < maxLength; i++) {
-				let numA = partsA[i] || 0;
-				let numB = partsB[i] || 0;
-				if (numA > numB) return true;
-				if (numA < numB) return false;
-			}
-			return false;
-		},
-
 		findReact(dom, traverseUp = 0) {
 			let key = Object.keys(dom).find(key => {
 				return key.startsWith("__reactFiber$")
@@ -1152,92 +1110,6 @@
 			});
 		},
 
-		async showUpdate() {
-			await Swal.fire({
-				...temp.swalDefault,
-				icon: "info",
-				title: "更新日志",
-				html: `<div class="version-log">
-				<div class="block">
-					<blockquote>
-						<div>风雨送春归，飞雪迎春到。已是悬崖百丈冰，犹有花枝俏。</div>
-						<div>俏也不争春，只把春来报。待到山花烂漫时，她在丛中笑。</div>
-					</blockquote>
-				</div>
-				<div class="block">(ﾉ◕ヮ◕)ﾉ 遇到 Bug 要记得去 <a class="pl-a" href="https://github.com/hmjz100/LinkSwift/issues" target="_blank">Github 议题</a> 向我报告哦~</div>
-				<div class="block">(o゜▽゜)o☆ 觉得好用？来一同完善本项目吧~ 欢迎提交<a class="pl-a" href="https://github.com/hmjz100/LinkSwift/pulls" target="_blank">拉取请求</a>为本项目做贡献~</div>
-				<div class="block">
-					<name>V1.1.3</name>
-					<div>
-					<div>LinkSwift 开发者在此祝您新春快乐！</div>
-					<div>爆竹声中一岁除，春风送暖入屠苏。LinkSwift 迎来功能更新：</div>
-					<div>1、新增 - IDM 客户端设置；</div>
-					<div>2、优化 - 链接缓存、浮动提示框；</div>
-					<div>3、适配 - 百度网盘分享页。</div>
-					</div>
-				</div>
-				<div class="block">
-					<name>V1.1.2.1</name>
-					<div>
-					<div>1、新增 - API 下载的推送到 IDM 功能；</div>
-					<div style="margin-left:10px">（感谢 <a href="https://github.com/Night-stars-1" target="_blank">Night Stars</a> 的帮助）</div>
-					<div>2、修复 - 复制 Aria2、cURL 命令行错误。</div>
-					</div>
-				</div>
-				<div class="block">
-					<name>V1.1.2</name>
-					<div>
-					<div>1、适配 - 123 云盘新策略；</div>
-					<div>2、适配 - 夸克、UC 网盘分享页；</div>
-					<div>3、新增 - 增强下载的多块多线程支持；</div>
-					<div>4、优化 - 页面绿化的部分匹配规则；</div>
-					<div>5、优化 - 增强下载进度条样式。</div>
-					</div>
-				</div>
-				<div class="block">更多历史更新内容请访问 <a class="pl-a" href="https://github.com/hmjz100/LinkSwift/releases" target="_blank">GitHub Releases</a> 查看。</div>
-				</div>
-				<style>
-				div:where(.swal2-container) div:where(.swal2-popup){
-					width:36em!important;
-				}
-				.version-log{
-					text-align:left;
-				}
-				.version-log > .block,
-				.version-log > hr{
-					margin-bottom:20px;
-				}
-				.version-log > hr{
-					border-style:inset;
-					border-width:1px;
-				}
-				.version-log .block name{
-					display:block;
-					margin-bottom:10px;
-					font-size:1.2em;
-				}
-				.version-log .block div{
-					margin-bottom:5px;
-				}
-				.version-log .block blockquote{
-					padding:0.7em;
-					border-left:5px solid #bdbdbd;
-					background-color:#f9f9f9;
-					margin:0;
-				}
-				@media (prefers-color-scheme:dark){
-					.version-log .block blockquote{
-						border-left:5px solid #7A7C84;
-						background-color:#464851;
-					}
-				}
-				</style>`,
-				allowOutsideClick: false,
-				showCloseButton: true,
-				confirmButtonText: "我已阅",
-			});
-		},
-
 		createTip() {
 			let tooltip = document.querySelector(".pl-tooltip");
 			let ticking = false;
@@ -1382,9 +1254,6 @@
 		},
 
 		addPageListener() {
-			$doc.on("click", ".listener-open-updatelog", () => {
-				base.showUpdate();
-			});
 			$doc.on("click", ".listener-open-beautify", () => {
 				base.showBeautify();
 			});
@@ -3452,15 +3321,10 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			if ("initPanLinker" in temp.main) temp.main.initPanLinker();
 			if ("greenerPage" in temp.main) temp.main.greenerPage();
 
-			let storedVersion = base.getValue("setting_init").version;
-			if (!storedVersion || base.isNewerVersion(info.version, storedVersion)) {
-				base.waitForKeyElements("body:not(.swal2-shown)", async () => {
-					await base.showUpdate();
-					let list = base.getValue("setting_init");
-					list.version = info.version;
-					base.setValue("setting_init", list);
-					return true;
-				}, true);
+			let list = base.getValue("setting_init");
+			if (list && list.version !== info.version) {
+				list.version = info.version;
+				base.setValue("setting_init", list);
 			}
 			temp.mount.append(`<svg aria-hidden="true" style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
 				<symbol id="icon-download" viewBox="0 0 512 512">
