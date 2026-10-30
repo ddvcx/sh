@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Initialization Environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -61,7 +61,7 @@ jobs:
     - name: Compile Firmware
       run: |
         cd $DIR
-        make -j$(nproc) || make -j1 || make -j1 V=s
+        make -j$(nproc) || make -j1 V=s
     - name: Clean Files
       run: |
         cd $DIR/bin/targets/*/*
