@@ -15,6 +15,7 @@ env:
   DIR: /workdir
   DIY: lede.sh
   TZ: Asia/Shanghai
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -25,9 +26,10 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
+        sudo docker image prune --all --force 2>/dev/null || true
         sudo -E apt -y update
-        sudo -E apt -y install libtool libtool-bin cmake gperf gawk bison xxd cpio gettext help2man pkg-config libgmp3-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 libncurses5-dev libz-dev patch unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs gcc-multilib p7zip p7zip-full rsync msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils libelf-dev autoconf automake  autopoint device-tree-compiler psmisc iptables jq netcat-openbsd screen socat 
+        sudo -E apt -y install libtool libtool-bin cmake gperf gawk bison xxd cpio gettext help2man pkg-config libgmp3-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 libncurses5-dev libz-dev patch unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full rsync msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils libelf-dev autoconf automake autopoint device-tree-compiler psmisc iptables jq netcat-openbsd screen socat python3-pyelftools python3-setuptools libfuse-dev zstd libzstd-dev swig
         sudo -E apt -y autoremove --purge
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -m 777 -p $DIR
@@ -55,10 +57,11 @@ jobs:
         cd $DIR
         make defconfig
         make download -j$(nproc)
+        find dl -size -1024c -exec rm -f {} \;
     - name: Compile Firmware
       run: |
         cd $DIR
-        make -j$(nproc) V=s
+        make -j$(nproc) || make -j1 || make -j1 V=s
     - name: Clean Files
       run: |
         cd $DIR/bin/targets/*/*
