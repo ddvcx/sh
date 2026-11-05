@@ -12,16 +12,15 @@ env:
   CONFIG_FILE: lede-ax6.config
   DEVICE: ipq807x
   DEVICE_NAME: ax6
-  DIR: /workdir
+  DIR: /workdir/immortalwrt
   DIY: lede.sh
   TZ: Asia/Shanghai
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
     - name: Initialization Environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -29,38 +28,35 @@ jobs:
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
         sudo docker image prune --all --force 2>/dev/null || true
         sudo -E apt -y update
-        sudo -E apt -y install libtool libtool-bin cmake gperf gawk bison xxd cpio gettext help2man pkg-config libgmp-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 libncurses-dev libz-dev patch unzip zlib1g-dev libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full rsync msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils libelf-dev autoconf automake autopoint device-tree-compiler psmisc iptables jq netcat-openbsd screen socat python3-pyelftools python3-setuptools libfuse-dev zstd libzstd-dev swig clang
+        sudo -E apt -y install --no-install-recommends libtool libtool-bin cmake gperf gawk bison xxd cpio gettext help2man pkg-config libgmp-dev libmpc-dev libmpfr-dev libltdl-dev build-essential asciidoc binutils bzip2 libncurses-dev libz-dev patch unzip zlib1g-dev libc6-dev-i386 flex gcc-multilib g++-multilib p7zip p7zip-full rsync msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils libelf-dev autoconf automake autopoint device-tree-compiler psmisc iptables jq netcat-openbsd screen socat python3-pyelftools python3-setuptools libfuse-dev zstd libzstd-dev swig clang
         sudo -E apt -y autoremove --purge
         sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -m 777 -p $DIR
-        echo "$(date +%y%m%d)" > ./date_tmp.txt && echo "DATE=$(cat ./date_tmp.txt)" >> $GITHUB_ENV
+        sudo mkdir -m 777 -p /workdir
+        echo "DATE=$(date +%y%m%d)" >> $GITHUB_ENV
     - name: Clone Source Code
+      run: |
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH $DIR
+    - name: Update & Install Feeds
       working-directory: ${{ env.DIR }}
       run: |
-        git clone $REPO_URL -b $REPO_BRANCH $REPO
-        ln -sf $DIR/$REPO $GITHUB_WORKSPACE/$REPO
-    - name: Update & Install Feeds
-      run: |
-        cd $REPO
-        echo "DIR=$PWD" >> $GITHUB_ENV
         ./scripts/feeds update -a
         ./scripts/feeds install -a
     - name: Load Custom Configuration
       run: |
-        if [ -e files ]; then mv files $DIR/files; fi
-        if [ -e $CONFIG_FILE ]; then mv $CONFIG_FILE $DIR/.config; fi
+        [ -e files ] && mv files $DIR/files
+        [ -e $CONFIG_FILE ] && cp -f $CONFIG_FILE $DIR/.config
         chmod +x $DIY
         cd $DIR
         $GITHUB_WORKSPACE/$DIY
     - name: Download Package
+      working-directory: ${{ env.DIR }}
       run: |
-        cd $DIR
         make defconfig
         make download -j$(nproc)
         find dl -size -1024c -exec rm -f {} \;
     - name: Compile Firmware
+      working-directory: ${{ env.DIR }}
       run: |
-        cd $DIR
         make -j$(nproc) || make -j1 V=s
     - name: Clean Files
       run: |
@@ -71,7 +67,7 @@ jobs:
         mv -f ./*$DEVICE_NAME*.ubi ./${{ env.REPO }}-${{ env.DEVICE_NAME }}-${{ env.DATE }}.ubi
         cp -fr $DIR/.config ./$CONFIG_FILE
     - name: Upload firmware directory
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.REPO }}-${{ env.DEVICE_NAME }}-${{ env.DATE }}
         path: ${{ env.FILE_PATH }}
