@@ -8,7 +8,7 @@ on:
 env:
   REPO: immortalwrt
   REPO_URL: https://github.com/immortalwrt/immortalwrt
-  REPO_BRANCH: master
+  REPO_BRANCH: openwrt-25.12
   CONFIG_FILE: lede-ax6.config
   DEVICE: ipq807x
   DEVICE_NAME: ax6
