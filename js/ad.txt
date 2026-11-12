@@ -24,6 +24,7 @@
 ##[href*="click.aliyun.com"]
 ##[href*="streamspotsearch.com"]
 ##[href*="ajax.api"]
+##[href*="chejiahao"]
 ##[href*="click?ad"]
 ##[href*="adshow"]
 ##[href*="/app.htm"]
