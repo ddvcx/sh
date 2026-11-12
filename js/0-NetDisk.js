@@ -76,7 +76,6 @@
 // @grant             GM_getValue
 // @grant             GM_deleteValue
 // @grant             GM_openInTab
-// @grant             GM_registerMenuCommand
 // @grant             GM_getResourceText
 // @compatible	      Chrome
 // @compatible	      Edge
@@ -91,12 +90,8 @@
 
 	let mount = idontknow("LinkSwift");
 	let info = {
-		author: GM_info.script?.author,
-		name: GM_info.script?.name,
 		version: (GM_info.script?.version || "1.1.3"),
 		icon: (GM_info.script?.icon || "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjNTc0QUI4Ii8+PGcgZmlsbD0iI2ZmZmZmZiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjQsIDY0KSBzY2FsZSgwLjc1KSI+PHBhdGggZD0iTTQyNS4xOTksMjIzLjk1N2MtMTMuMzAzLTEzLjMwMy0zNC45NjEtMTMuMzAzLTQ4LjIwNS0wLjA2bC04Ni44NjEsODUuMDg2VjM0LjEzM0MyOTAuMTMzLDE1LjMwOSwyNzQuODI0LDAsMjU2LDAgcy0zNC4xMzMsMTUuMzA5LTM0LjEzMywzNC4xMzN2Mjc0Ljg2N2wtODYuODAxLTg1LjA1MmMtMTMuMzEyLTEzLjMxMi0zNC45NjEtMTMuMzEyLTQ4LjI3MywwIGMtMTMuMzEyLDEzLjMxMi0xMy4zMDMsMzQuOTcsMCw0OC4yNzNjMC4wMTcsMC4wMTcsMC4wMzQsMC4wMjYsMC4wNDMsMC4wNDNsMTQ4LjM2MSwxNDYuNWM1LjcyNiw1LjY1OCwxMy4yMjcsOC40ODIsMjAuNzI3LDguNDgyIGM3LjU0MywwLDE1LjA3OC0yLjg1OSwyMC43ODctOC41NjhMNDI1LjE5OSwyNzIuMjNjNi40NTEtNi40NDMsMTAuMDAxLTE1LjAxOSwxMC4wMDEtMjQuMTMyUzQzMS42NSwyMzAuNDA5LDQyNS4xOTksMjIzLjk1N3oiLz48cGF0aCBkPSJNNDAxLjA2Nyw0NDMuNzMzSDExMC45MzNjLTE4LjgyNSwwLTM0LjEzMywxNS4zMDktMzQuMTMzLDM0LjEzM1M5Mi4xMDksNTEyLDExMC45MzMsNTEyaDI5MC4xMzMgYzE4LjgyNSwwLDM0LjEzMy0xNS4zMDksMzQuMTMzLTM0LjEzM1M0MTkuODgzLDQ0My43MzMsNDAxLjA2Nyw0NDMuNzMzeiIvPjwvZz48L3N2Zz4="),
-		mhandler: GM_info.scriptHandler,
-		mversion: GM_info.version,
 	};
 	let aria2 = {
 		domain: "http://localhost",
@@ -113,9 +108,8 @@
 		mode: [],
 		links: [],
 		glinks: [],
-		color: "",
+		color: "#574AB8",
 		request: {},
-		colored: false,
 		swalDefault: {
 			position: "center",
 			heightAuto: false,
@@ -160,40 +154,13 @@
 			num: "865746",
 			license: "AGPL3",
 			dom: {
-				footer: `o(≧▽≦)o 十分感谢您的支持！来给此项目一个 <a href="https://github.com/hmjz100/LinkSwift" target="_blank" class="pl-a" data-no-instant="1">Star</a> 吧~`,
 				button: {
 					aria2: {
 						title: "Aria2 下载",
 						footer: `<p>RPC 适用于 <a href="https://www.youxiaohou.com/zh-cn/motrix.html" target="_blank" class="pl-a" data-no-instant="1">Motrix</a>，<a href="https://www.youxiaohou.com/download.html" target="_blank" class="pl-a" data-no-instant="1">Aria2 Tools</a>，<a href="https://www.youxiaohou.com/download.html" target="_blank" class="pl-a" data-no-instant="1">AriaNgGUI</a></p>
 						<p>命令行适用于 <a href="https://www.youxiaohou.com/zh-cn/xdown.html" target="_blank" class="pl-a" data-no-instant="1">XDown</a> 及 <a href="https://www.youxiaohou.com/zh-cn/linux.html#linux-shell" target="_blank" class="pl-a" data-no-instant="1">Linux Shell 命令行</a></p>`
 					}
-				},
-				themes: [
-					{ color: "#09AAFF", name: "度盘|经典蓝" },
-					{ color: "#cc3235", name: "度盘|平安红" },
-					{ color: "#518c17", name: "度盘|盎然绿" },
-					{ color: "#ed944b", name: "度盘|周年橙" },
-					{ color: "#f969a5", name: "度盘|幸会粉" },
-					{ color: "#bca280", name: "度盘|午后棕" },
-					{ color: "#b673ab", name: "度盘|物语紫" },
-					{ color: "#574AB8", name: "度盘|星空紫" },
-					{ color: "#1d2327", name: "OpenAI|默认黑" },
-					{ color: "#18a497", name: "OpenAI|默认青" },
-					{ color: "#637dff", name: "度里叁|霞光紫" },
-					{ color: "#0d53ff", name: "夸克|极简蓝" },
-					{ color: "#f8d800", name: "果核|柠檬黄" },
-					{ color: "#0396ff", name: "果核|默认蓝" },
-					{ color: "#32ccbc", name: "果核|碧波绿" },
-					{ color: "#f6416c", name: "果核|玫瑰红" },
-					{ color: "#2271b1", name: "文派|默认蓝" },
-					{ color: "#59524c", name: "文派|咖啡灰" },
-					{ color: "#ff679a", name: "哔哩|少女粉" },
-					{ color: "#f44236", name: "哔哩|高能红" },
-					{ color: "#fec107", name: "哔哩|咸蛋黄" },
-					{ color: "#8bc24a", name: "哔哩|早苗绿" },
-					{ color: "#2594ed", name: "哔哩|宝石蓝" },
-					{ color: "#9c28b1", name: "哔哩|罗兰紫" }
-				]
+				}
 			}
 		},
 		$baidu: {
@@ -271,15 +238,6 @@
 	}
 
 	let base = {
-		registerMenuCommand() {
-			GM_registerMenuCommand("🍃️ 美化", () => {
-				base.showBeautify();
-			});
-			GM_registerMenuCommand("🛠️ 调试", () => {
-				base.showDebug();
-			});
-		},
-
 		isType(obj) {
 			return Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, "$1").toLowerCase();
 		},
@@ -648,166 +606,6 @@
 			}, true);
 		},
 
-		hexToRgba(hex) {
-			hex = hex.replace(/^#/, "");
-			if (hex.length === 4) {
-				hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
-			}
-			let r = parseInt(hex.substring(0, 2), 16);
-			let g = parseInt(hex.substring(2, 4), 16);
-			let b = parseInt(hex.substring(4, 6), 16);
-			let a = "";
-			if (hex.length === 8) {
-				a = parseInt(hex.substring(6, 8), 16) / 255;
-				a = "," + a
-			}
-			return r + ", " + g + ", " + b + a;
-		},
-
-		adaptiveStyleOverride(cssText, baseURI, type, colorMap) {
-			if (!cssText) return "";
-			if (baseURI) {
-				cssText = cssText.replace(/url\s*\(\s*(['"]?)(.*?)\1\s*\)/g, (match, quote, url) => {
-					if (url && !/^(data:|https?:|\/\/)/i.test(url)) {
-						try {
-							let absoluteURL = new URL(url, baseURI).href;
-							return `url(${absoluteURL})`;
-						} catch (e) {
-							return match;
-						}
-					}
-					return match;
-				});
-			}
-			config.base.dom.themes.forEach(item => {
-				let oldColor = item.color;
-				cssText = cssText.replace(new RegExp(base.hexToRgba(oldColor), "ig"), base.hexToRgba(temp.color));
-				cssText = cssText.replace(new RegExp(oldColor, "ig"), temp.color);
-			});
-			if (type === "other") {
-				colorMap.forEach(function (colorPair) {
-					let oldColor = colorPair[0];
-					let newColor = colorPair[1];
-					var variants = [
-						oldColor,
-						oldColor.toUpperCase(),
-						oldColor.toLowerCase()
-					];
-					var uniqueVariants = [...new Set(variants)];
-					uniqueVariants.forEach(variant => {
-						var regex = new RegExp(variant, "g");
-						cssText = cssText.replace(regex, newColor);
-					});
-				});
-				return cssText;
-			}
-			if (colorMap) {
-				colorMap.forEach(function (colorPair) {
-					let oldColor = colorPair[0];
-					let newColor = colorPair[1];
-					var variants = [
-						oldColor,
-						oldColor.toUpperCase(),
-						oldColor.toLowerCase()
-					];
-					var uniqueVariants = [...new Set(variants)];
-					if (oldColor.includes("#")) {
-						uniqueVariants.forEach(variant => {
-							var regexWithBlock = new RegExp(variant + "(.*?)}", "gi");
-							cssText = cssText.replace(regexWithBlock, newColor + "$1; transition:all.2s}");
-						});
-						uniqueVariants.forEach(variant => {
-							cssText = cssText.replace(new RegExp(variant, "gi"), newColor);
-						});
-					} else {
-						uniqueVariants.forEach(variant => {
-							cssText = cssText.replace(new RegExp(variant, "gi"), newColor);
-						});
-					}
-				});
-			}
-			return cssText;
-		},
-
-		adaptiveThemeOverride(colorMap, type) {
-			base.waitForKeyElements(`[${mount}^="${mount}-ColorUI-"], [id^="${mount}-ColorUI-"]`, function (tag) {
-				let cssText = base.adaptiveStyleOverride(tag.text(), "", type, colorMap);
-				if (tag.html() === cssText) return;
-				base.addStyle(tag.attr(mount), "style", cssText, tag[0]);
-				return true;
-			}, true)
-			base.waitForKeyElements(`[data-pl-colored]`, function (tag) {
-				if (tag.attr("data-pl-colored") === temp.color) return;
-				let originalStyle = tag.attr("style");
-				if (!originalStyle) return;
-				let newStyle = base.adaptiveStyleOverride(originalStyle, "", type, colorMap);
-				if (newStyle !== originalStyle) {
-					tag.attr("style", newStyle);
-				}
-				return true;
-			}, true);
-			let count = 0;
-			if (!temp.colored) {
-				base.waitForKeyElements(`link[rel="stylesheet"]`, function (tag) {
-					if (!tag.parent().length || !tag.attr("href")) return;
-					let href = tag.attr("href");
-					try {
-						href = new URL(href, location.href).href;
-					} catch (e) {
-						return;
-					}
-					fetch(href)
-						.then(response => response.text())
-						.then(responseText => {
-							let id = `${mount}-ColorUI-` + href.replace(/[^\w]/g, "_");
-							let cssText = base.adaptiveStyleOverride(responseText, href, type, colorMap);
-							if (responseText === cssText) return;
-							base.addStyle(id, "style", cssText, tag[0], "after");
-						})
-				}, true);
-				base.waitForKeyElements(`style:not([${mount}^="${mount}-"],[id^="swal-pub"],[class^="darkreader"])`, function (tag) {
-					let id = tag.attr(mount);
-					let text = tag.html()
-					if (tag.data("styles") === text) return;
-					tag.data("styles", text);
-					let cssText = base.adaptiveStyleOverride(text, "", type, colorMap);
-					if (text === cssText) return;
-					id = id ? id : `${mount}-ColorUI-${count++}`
-					base.addStyle(id, "style", cssText, tag[0], "after");
-				}, true)
-				base.waitForKeyElements("svg", function (element) {
-					element.find("*").each((index, element) => {
-						let fill = $(element).attr("fill");
-						let stroke = $(element).attr("stroke");
-						if (fill) {
-							let newFill = base.adaptiveStyleOverride(fill, "", type, colorMap);
-							if (newFill !== fill) {
-								$(element).attr("fill", newFill);
-							}
-						}
-						if (stroke) {
-							let newStroke = base.adaptiveStyleOverride(stroke, "", type, colorMap);
-							if (newStroke !== stroke) {
-								$(element).attr("stroke", newStroke);
-							}
-						}
-					});
-				}, true);
-				base.waitForKeyElements(`[style]:not([${mount}^="${mount}-"],[class*="listener-"])`, function (element) {
-					if (element.parent(`[class*="pl-"]`).length) return;
-					if (element.attr("data-pl-colored") === temp.color) return;
-					let originalStyle = element.attr("style");
-					if (!originalStyle) return;
-					let newStyle = base.adaptiveStyleOverride(originalStyle, "", type, colorMap);
-					if (newStyle !== originalStyle) {
-						element.attr("style", newStyle);
-						element.attr("data-pl-colored", temp.color);
-					}
-				}, true);
-				temp.colored = true;
-			}
-		},
-
 		sleep(time) {
 			return new Promise(resolve => setTimeout(resolve, time));
 		},
@@ -865,14 +663,7 @@
 						"setting_rpc_dir": ["setting_aria2_rpc", 0, "dir"],
 						"setting_init_code": ["setting_init", "code"],
 						"setting_init_license": ["setting_init", "license"],
-						"setting_init_version": ["setting_init", "version"],
-						"setting_theme_color": ["setting_ui_theme", "color"],
-						"setting_theme_baidu": ["setting_ui_theme", "custom", "$baidu"],
-						"setting_theme_ali": ["setting_ui_theme", "custom", "$aliyun"],
-						"setting_theme_tcloud": ["setting_ui_theme", "custom", "$tcloud"],
-						"setting_theme_xunlei": ["setting_ui_theme", "custom", "$xunlei"],
-						"setting_theme_quark": ["setting_ui_theme", "custom", "$quark"],
-						"setting_theme_123": ["setting_ui_theme", "custom", "$123pan"]
+						"setting_init_version": ["setting_init", "version"]
 					};
 					for (let oldKey in mapping) {
 						let val = base.getValue(oldKey);
@@ -932,20 +723,6 @@
 						code: config.base.num,
 						license: config.base.license,
 						version: ""
-					}
-				},
-				{
-					name: "setting_ui_theme",
-					value: {
-						color: "#574AB8",
-						custom: {
-							$baidu: false,
-							$aliyun: false,
-							$tcloud: false,
-							$xunlei: false,
-							$quark: false,
-							$123pan: false
-						}
 					}
 				},
 				{
@@ -1032,82 +809,6 @@
 					base.setValue("setting_aria2_rpc", currentAria2);
 				}
 			}
-		},
-
-		showBeautify() {
-			function changeColor() {
-				temp.color = base.getValue("setting_ui_theme").color;
-				return config.base.dom.themes.map(item => {
-					return `<div style="--color:${item.color}" class="listener-color" data-color="${item.color}">
-						<div class="mask">
-							${item.name.split("|").map(part => `<div>${part}</div>`).join("")}
-							${item.color === temp.color ? `<div class="this">✓</div>` : ""}
-						</div>
-					</div>`;
-				}).join("")
-			}
-			function changeTheme() {
-				let themeList = [
-					{ name: "百度网盘", key: "$baidu" },
-					{ name: "阿里云盘", key: "$aliyun" },
-					{ name: "天翼云盘", key: "$tcloud" },
-					{ name: "迅雷云盘", key: "$xunlei" },
-					{ name: "夸克网盘", key: "$quark" },
-					{ name: "123 云盘", key: "$123pan" }
-				];
-				return themeList.map(item => {
-					return `<label class="pl-setting-item">
-						<div>${item.name}</div>
-						<input type="checkbox" class="swal2-checkbox pl-input listener-theme" data-type="${item.key}" ${base.getValue("setting_ui_theme").custom[item.key] === true ? "checked" : ""}>
-					</label>`;
-				}).join("");
-			}
-			let beautify = $(`<div>
-				<div style="text-align:center;">带星号的美化项目将在网页刷新后生效</div>
-				<label class="pl-setting-item" style="justify-content:center"><div class="pl-color">${changeColor()}</div></label>
-				<div class="pl-setting-item"><div>替换界面配色为主题颜色*</div><div class="pl-checkboxies">${changeTheme()}</div></div>
-				<style>
-					.pl-color{display:grid!important;grid-template-columns:repeat(5, var(--pl-color-width));gap:10px;--pl-color-width:55px}
-					.pl-color > div{background-color:var(--color);width:var(--pl-color-width);height:var(--pl-color-width);box-sizing:border-box;cursor:pointer}
-					.pl-color .mask{width:calc(var(--pl-color-width) - 2px);height:calc(var(--pl-color-width) - 2px);opacity:0;transition:opacity.2s;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;flex-direction:column}
-					.pl-color > div:hover .mask{opacity:1}
-					.pl-checkboxies{display:grid!important;grid-template-columns:repeat(2, 98px);gap:10px}
-					.pl-input[type=checkbox]{height:20px;width:20px;padding:0!important;background-image:none!important}
-				</style>
-			</div>`)
-			Swal.fire({
-				...temp.swalDefault,
-				title: "(✿ᴗ‿ᴗ) 助手美化",
-				html: beautify.html(),
-				icon: "success",
-				iconHtml: "🍃︎",
-				allowOutsideClick: false,
-				showCloseButton: true,
-				showConfirmButton: false,
-				footer: `<p><a href="&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#47;&#104;&#109;&#106;&#122;&#49;&#48;&#48;&#47;&#76;&#105;&#110;&#107;&#83;&#119;&#105;&#102;&#116;" target="_blank" class="pl-a">&#76;&#105;&#110;&#107;&#83;&#119;&#105;&#102;&#116;</a>&#32;&#30001;&#32;<a href="&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#47;&#104;&#109;&#106;&#122;&#49;&#48;&#48;" target="_blank" class="pl-a">&#104;&#109;&#106;&#122;&#49;&#48;&#48;</a>&#32;&#21046;&#20316;</p><p>${config.base.dom.footer}</p>`,
-			});
-		},
-
-		showDebug() {
-			let debugInfo = "";
-			debugInfo += `<span>以下内容均为脚本自检信息<br/>本页面仅作为调试使用<span>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外] 管理器名称</div>${info.mhandler ? info.mhandler : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外] 管理器版本</div>${info.mversion ? info.mversion : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[内] 脚本挂载点</div>${mount ? `${mount.toLowerCase()}.${mount}` : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外] 脚本名称</div>${info.name ? info.name : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外] 脚本作者</div>${info.author ? info.author : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外/内] 脚本版本</div>${info.version ? info.version : "无法获取"}</label>`;
-			debugInfo += `<label class="pl-setting-item"><div>[外/内] 脚本图标</div>${info.icon ? `<img style="max-width:30%" src="${info.icon}"></img>` : "无法获取"}</label>`;
-			debugInfo = "<div>" + debugInfo + "</div>";
-			Swal.fire({
-				...temp.swalDefault,
-				icon: "info",
-				title: "调试信息",
-				html: debugInfo,
-				allowOutsideClick: false,
-				showCloseButton: true,
-				footer: `<p><a href="&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#47;&#104;&#109;&#106;&#122;&#49;&#48;&#48;&#47;&#76;&#105;&#110;&#107;&#83;&#119;&#105;&#102;&#116;" target="_blank" class="pl-a">&#76;&#105;&#110;&#107;&#83;&#119;&#105;&#102;&#116;</a>&#32;&#30001;&#32;<a href="&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#47;&#104;&#109;&#106;&#122;&#49;&#48;&#48;" target="_blank" class="pl-a">&#104;&#109;&#106;&#122;&#49;&#48;&#48;</a>&#32;&#21046;&#20316;</p><p>${config.base.dom.footer}</p>`,
-			});
 		},
 
 		createTip() {
@@ -1254,28 +955,6 @@
 		},
 
 		addPageListener() {
-			$doc.on("click", ".listener-open-beautify", () => {
-				base.showBeautify();
-			});
-			$doc.on("click", ".listener-color", async function (e) {
-				let element = $(e.currentTarget).closest(".listener-color").length > 0 ? $(e.currentTarget).closest(".listener-color") : $(e.currentTarget);
-				let parent = element.closest(".pl-color");
-				let mask = element.find(".mask");
-				let color = element.data("color");
-				if (color && parent.length > 0 && mask.length > 0) {
-					parent.find(".this").remove();
-					mask.append(`<div class="this">✓</div>`);
-					let list = base.getValue("setting_ui_theme")
-					list.color = color;
-					base.setValue("setting_ui_theme", list);
-					base.addPanLinkerStyle();
-				}
-			});
-			$doc.on("change", ".listener-theme", async function (e) {
-				let list = base.getValue("setting_ui_theme");
-				list.custom[e.currentTarget.dataset.type] = e.currentTarget.checked;
-				base.setValue("setting_ui_theme", list);
-			});
 			$doc.on("click", ".listener-copy", async function (e) {
 				e.preventDefault();
 				let target = $(e.currentTarget);
@@ -1340,8 +1019,6 @@
 		},
 
 		addPanLinkerStyle() {
-			temp.color = base.getValue("setting_ui_theme").color;
-			if ("beautifyPage" in temp.main) temp.main.beautifyPage();
 			base.addStyle("swal-pub-style", "style", `@media (prefers-color-scheme:light){${GM_getResourceText("SwalLigt")}}`);
 			base.addStyle("swal-pub-dark-style", "style", `@media (prefers-color-scheme:dark){${GM_getResourceText("SwalDark").replace(/#19191a/, "#222226")}}`);
 			base.addStyle("swal-pub-custom-style", "style", `
@@ -1450,12 +1127,6 @@ header[style="display:none;"]~.pl-button{display:inline-block;position:fixed;top
 .xunlei-button{display:inline-flex;align-items:center;justify-content:center;border:0 solid transparent;border-radius:5px;box-shadow:0 0 0 0 transparent;width:fit-content;white-space:nowrap;flex-shrink:0;font-size:14px;line-height:1.5;outline:0;touch-action:manipulation;transition:background.2s,color.2s,border.2s,box-shadow.2s;color:#fff;background:${temp.color};margin-left:12px;padding:0px 12px;position:relative;cursor:pointer;height:36px;will-change:background}
 .xunlei-button:hover{background:${temp.color}b0}
 .quark-button{padding:0 14px;background:${temp.color}!important;background-color:${temp.color}!important;will-change:background,background-color}
-.pl-setting-item{display:flex;align-items:center;justify-content:space-between;margin-top:1em}
-.pl-setting-item > *:nth-child(2){max-width:80%;display:flex;justify-content:space-between;align-items:center}
-.pl-setting-item .pl-setting-item{margin:0;gap:5px}
-.pl-input{padding:8px 10px!important;border:1px solid #c2c2c2;border-radius:5px;font-size:14px!important;margin:0;appearance:auto!important}
-.pl-setting-item > .pl-input:not([type="checkbox"]){width:80%}
-.center-input{text-align:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",sans-serif;font-weight:300}
 .pl-tooltip{position:absolute;z-index:110000;display:none;align-items:center;color:#ffffff;background:#333;font-size:12px;line-height:1.3;max-width:600px;border-radius:5px;word-break:break-all;will-change:display,top,left}
 .pl-tooltip>*{padding:5px 10px}
 .pl-tooltip>*:first-child{border:1px solid;border-top-left-radius:5px;border-bottom-left-radius:5px;border-top-color:#333;border-bottom-color:#333;border-left-color:#333;border-right-color:transparent}
@@ -1825,210 +1496,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				}, true)
 			}
 		},
-		beautifyPage() {
-			if (base.getValue("setting_ui_theme").custom.$baidu !== true) return;
-			if (temp.main.detectPage() !== "home") {
-				base.adaptiveThemeOverride([
-					["#717fff", temp.color],
-					["#717FFF", temp.color],
-					["#06a8ff", temp.color],
-					["#06A8FF", temp.color],
-					["#06a7ff", temp.color],
-					["#06A7FF", temp.color],
-					["#dcdfe6", temp.color],
-					["#DCDFE6", temp.color],
-					["#0095ff", temp.color],
-					["#0095FF", temp.color],
-					["#09aaff", temp.color],
-					["#09AAFF", temp.color],
-					["#0ca6ff", temp.color],
-					["#0CA6FF", temp.color],
-					["#5040ff", temp.color],
-					["#5040FF", temp.color],
-					["#454d5a", temp.color],
-					["#454D5A", temp.color],
-					["#a2abbd", temp.color],
-					["#A2ABBD", temp.color],
-					["#030b1a", temp.color],
-					["#030B1A", temp.color],
-					["#afb3bf", temp.color],
-					["#AFB3BF", temp.color],
-					["#ff436a", temp.color],
-					["#FF436A", temp.color],
-					["#03081a", temp.color],
-					["#03081A", temp.color],
-					["#2974b6", temp.color],
-					["#2974B6", temp.color],
-					["#0596e6", temp.color],
-					["#0596E6", temp.color],
-					["#C3EAFF", temp.color],
-					["#c0d9fe", `${temp.color}50`],
-					["#0098EA", `${temp.color}D0`],
-					["#38b9ff", `${temp.color}D0`],
-					["#38B9FF", `${temp.color}D0`],
-					["#42d8ff", `${temp.color}D0`],
-					["#42D8FF", `${temp.color}D0`],
-					["#a48dff", `${temp.color}D0`],
-					["#A48DFF", `${temp.color}D0`],
-					["#6b79f2", `${temp.color}D0`],
-					["#6B79F2", `${temp.color}D0`],
-					["#9c86f2", `${temp.color}90`],
-					["#9C86F2", `${temp.color}90`],
-					["#83d3ff", `${temp.color}90`],
-					["#83D3FF", `${temp.color}90`],
-					["#C4D8F4", `${temp.color}90`],
-					["#fafafc", `${temp.color}20`],
-					["#FAFAFC", `${temp.color}20`],
-					["#f5fbff", `${temp.color}20`],
-					["#F5FBFF", `${temp.color}20`],
-					["#b4e5ff", `${temp.color}20`],
-					["#B4E5FF", `${temp.color}20`],
-					["#f0faff", `${temp.color}20`],
-					["#F0FAFF", `${temp.color}20`],
-					["#c4d8f4", `${temp.color}20`],
-					["#f1f3f8", `${temp.color}15`],
-					["#F1F3F8", `${temp.color}15`],
-					["#f2faff", `${temp.color}10`],
-					["#F2FAFF", `${temp.color}10`],
-					["#eef9fe", `${temp.color}10`],
-					["#EEF9FE", `${temp.color}10`],
-					["#f7f9fc", `${temp.color}10`],
-					["#F7F9FC", `${temp.color}10`],
-					["#f5f6fa", `${temp.color}10`],
-					["#F5F6FA", `${temp.color}10`],
-					["#b4e5ff", `${temp.color}10`],
-					["#B4E5FF", `${temp.color}10`],
-					["#e6f6ff", `${temp.color}10`],
-					["#E6F6FF", `${temp.color}10`],
-					["0,149,255", base.hexToRgba(temp.color)],
-					["30, 175, 255", base.hexToRgba(temp.color)],
-					["6, 167, 255, 0.1", base.hexToRgba(`${temp.color}1a`)],
-					["6,167,255,.1", base.hexToRgba(`${temp.color}1a`)],
-					["6,167,255,.23", base.hexToRgba(`${temp.color}3b`)],
-					["164,141,255,.2", base.hexToRgba(`${temp.color}30`)],
-					["196,182,255,.2", base.hexToRgba(`${temp.color}20`)],
-					["113,127,255,.2", base.hexToRgba(`${temp.color}40`)],
-					["3,8,26,.6", base.hexToRgba(`${temp.color}D0`)],
-					["255,32,102,.4", base.hexToRgba(`${temp.color}66`)],
-					["72,166,248,.7", base.hexToRgba(`${temp.color}66`)],
-				]);
-			};
-			base.addStyle(`${mount}-baidu`, "style", `
-				#layoutMain,.DxdbeCb{border-radius:10px;border-bottom-left-radius:0;border-bottom-right-radius:0;background:#ffffffA0!important}
-				.KPDwCE,
-				.DxdbeCb .OFaPaO .tanwePYr,
-				.xGLMIab .fufHyA:hover,
-				.module-search-timeline .form-box
-				{background:#ffffffA0!important}
-				.KPDwCE .JDeHdxb,
-				.NHcGw .AuPKyz,
-				.xGLMIab .tvPMvPb,
-				.xGLMIab .FcQMwt,
-				.cazEfA .yfHIsP,
-				.hscjZ4QL .bbxnZ0Bq .ehnyLxWZ span,
-				.module-topToolBar,
-				.module-timeline-view .timeline-title-curday
-				{background:transparent!important;border-bottom:0}
-				.MdLxwM{background :#fff!important}
-				.aside-absolute-container{position:absolute!important}
-				.aside-absolute-container .QGOvsxb .remainingSpaceUi_span{background:#8af248!important;border-radius:10px 0 0 10px;border-right:#fff 1px solid;border-bottom:#fff 1px solid}
-				.xtJbHcb .CDaavKb .KQcHyA{background:rgb(244,207,0)!important;padding:8px 15px}
-				.xtJbHcb .web-header-nav-new-version-inner{background:${temp.color}!important;padding:8px 15px;line-height:15px;width:auto;height:auto}
-				a{transition:all.2s!important}
-				#bd-main .bd-left{margin:auto!important}
-				.verify-input input{padding-left:0!important;text-align:center!important}
-				.verify-input input:focus{border:2px solid ${temp.color}!important}
-				[data-theme=light] .vp-video-page-card .vp-video-page-card__video-detail{color:#030b1a}
-				dt.level-1{background:#fd6d65!important}
-				dt.level-2{background:#f3a723!important}
-				dt.level-1 i.desc-arrow{border-bottom:10px solid #dd6966!important}
-				dt.level-2 i.desc-arrow{border-bottom:10px solid #d29633!important}
-				`, `.${mount}`);
-			base.adaptiveThemeOverride([
-				["#717fff", temp.color],
-				["#717FFF", temp.color],
-				["#06a8ff", temp.color],
-				["#06A8FF", temp.color],
-				["#06a7ff", temp.color],
-				["#06A7FF", temp.color],
-				["#dcdfe6", temp.color],
-				["#DCDFE6", temp.color],
-				["#0095ff", temp.color],
-				["#0095FF", temp.color],
-				["#09aaff", temp.color],
-				["#09AAFF", temp.color],
-				["#0ca6ff", temp.color],
-				["#0CA6FF", temp.color],
-				["#5040ff", temp.color],
-				["#5040FF", temp.color],
-				["#454d5a", temp.color],
-				["#454D5A", temp.color],
-				["#a2abbd", temp.color],
-				["#A2ABBD", temp.color],
-				["#030b1a", temp.color],
-				["#030B1A", temp.color],
-				["#afb3bf", temp.color],
-				["#AFB3BF", temp.color],
-				["#ff436a", temp.color],
-				["#FF436A", temp.color],
-				["#03081a", temp.color],
-				["#03081A", temp.color],
-				["#2974b6", temp.color],
-				["#2974B6", temp.color],
-				["#0596e6", temp.color],
-				["#0596E6", temp.color],
-				["#C3EAFF", temp.color],
-				["#c0d9fe", `${temp.color}50`],
-				["#0098EA", `${temp.color}D0`],
-				["#38b9ff", `${temp.color}D0`],
-				["#38B9FF", `${temp.color}D0`],
-				["#42d8ff", `${temp.color}D0`],
-				["#42D8FF", `${temp.color}D0`],
-				["#a48dff", `${temp.color}D0`],
-				["#A48DFF", `${temp.color}D0`],
-				["#6b79f2", `${temp.color}D0`],
-				["#6B79F2", `${temp.color}D0`],
-				["#9c86f2", `${temp.color}90`],
-				["#9C86F2", `${temp.color}90`],
-				["#83d3ff", `${temp.color}90`],
-				["#83D3FF", `${temp.color}90`],
-				["#C4D8F4", `${temp.color}90`],
-				["#fafafc", `${temp.color}20`],
-				["#FAFAFC", `${temp.color}20`],
-				["#f5fbff", `${temp.color}20`],
-				["#F5FBFF", `${temp.color}20`],
-				["#b4e5ff", `${temp.color}20`],
-				["#B4E5FF", `${temp.color}20`],
-				["#f0faff", `${temp.color}20`],
-				["#F0FAFF", `${temp.color}20`],
-				["#c4d8f4", `${temp.color}20`],
-				["#f1f3f8", `${temp.color}15`],
-				["#F1F3F8", `${temp.color}15`],
-				["#f2faff", `${temp.color}10`],
-				["#F2FAFF", `${temp.color}10`],
-				["#eef9fe", `${temp.color}10`],
-				["#EEF9FE", `${temp.color}10`],
-				["#f7f9fc", `${temp.color}10`],
-				["#F7F9FC", `${temp.color}10`],
-				["#f5f6fa", `${temp.color}10`],
-				["#F5F6FA", `${temp.color}10`],
-				["#b4e5ff", `${temp.color}10`],
-				["#B4E5FF", `${temp.color}10`],
-				["#e6f6ff", `${temp.color}10`],
-				["#E6F6FF", `${temp.color}10`],
-				["0,149,255", base.hexToRgba(temp.color)],
-				["30, 175, 255", base.hexToRgba(temp.color)],
-				["6, 167, 255, 0.1", base.hexToRgba(`${temp.color}1a`)],
-				["6,167,255,.1", base.hexToRgba(`${temp.color}1a`)],
-				["6,167,255,.23", base.hexToRgba(`${temp.color}3b`)],
-				["164,141,255,.2", base.hexToRgba(`${temp.color}30`)],
-				["196,182,255,.2", base.hexToRgba(`${temp.color}20`)],
-				["113,127,255,.2", base.hexToRgba(`${temp.color}40`)],
-				["3,8,26,.6", base.hexToRgba(`${temp.color}D0`)],
-				["255,32,102,.4", base.hexToRgba(`${temp.color}66`)],
-				["72,166,248,.7", base.hexToRgba(`${temp.color}66`)],
-			], "other");
-		},
 		addButton() {
 			base.waitForKeyElements(config.$baidu.mount.home, (element) => {
 				temp.page = temp.main.detectPage();
@@ -2309,7 +1776,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			return "";
 		},
 		async initPanLinker() {
-			base.registerMenuCommand();
 			this.addButton();
 			this.addPageListener();
 		},
@@ -2317,7 +1783,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 
 	let $baiduAuthorize = {
 		async initPanLinker() {
-			base.registerMenuCommand();
 			Swal.fire({
 				...temp.swalDefault,
 				showConfirmButton: false,
@@ -2444,29 +1909,13 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 	};
 
 	let $tcloud = {
-				greenerPage() {
+		greenerPage() {
 			base.waitForKeyElements(".advertising-mask", function (tag) {
 				tag.fadeOut();
 			}, true);
 			base.waitForKeyElements("a.client-download.nav-block", function (tag) {
 				tag.fadeOut();
 			}, true);
-		},
-		beautifyPage() {
-			if (base.getValue("setting_ui_theme").custom.$tcloud !== true) return;
-			base.adaptiveThemeOverride([
-				["#2b89ea", temp.color],
-				["#1874d3", `${temp.color}F0`],
-				["#1890ff", temp.color],
-				["#388fc9", temp.color],
-				["#0087ff", temp.color],
-				["#255697", temp.color],
-				["#3ea6ff", `${temp.color}80`],
-				["#1d52f2", temp.color],
-				["#3699ff", `${temp.color}D0`],
-				["#f4f9fe", `${temp.color}10`],
-				["#eaf5ff", `${temp.color}20`],
-			], "other");
 		},
 		addButton() {
 			let $button = $(`<div class="pl-button tcloud-button"><svg class="icon-download" style="margin-right:4px;"><use xlink:href="#icon-download"/></svg>下载助手</div>`);
@@ -2597,7 +2046,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			return "";
 		},
 		async initPanLinker() {
-			base.registerMenuCommand();
 			this.addButton();
 			this.addPageListener();
 			this.getToken();
@@ -2616,22 +2064,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				await base.sleep(500);
 				document.querySelector(".save-to-pan").click();
 			});
-		},
-		beautifyPage() {
-			if (base.getValue("setting_ui_theme").custom.$xunlei !== true) return;
-			base.adaptiveThemeOverride([
-				["#3f85ff", temp.color],
-				["63,133,255,.1", base.hexToRgba(`${temp.color}20`)],
-				["#2670ea", `${temp.color}D0`],
-				["#619bff", `${temp.color}D0`],
-				["#ecf3ff", `${temp.color}10`],
-				["#f6faff", `${temp.color}10`],
-				["#1a2845", `${temp.color}20`],
-				["#0f2035", `${temp.color}20`],
-				["#308bfd", `${temp.color}20`],
-				["#eee", `${temp.color}20`],
-			], "other");
-			base.addStyle(`${mount}-xunlei`, "style", `.web-header{background:linear-gradient(0deg,${temp.color}D0,${temp.color})}`);
 		},
 		addButton() {
 			base.waitForKeyElements(config.$xunlei.mount.home, (element) => {
@@ -2747,7 +2179,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			return "";
 		},
 		async initPanLinker() {
-			base.registerMenuCommand();
 			this.addButton();
 			this.addPageListener();
 		},
@@ -2812,21 +2243,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			base.waitForKeyElements(".modal .modal-content .halo-animated-background .halo-content .red-envelope .close", function (tag) {
 				tag[0].click();
 			}, true);
-		},
-		beautifyPage() {
-			if (base.getValue("setting_ui_theme").custom.$quark !== true) return;
-			base.adaptiveThemeOverride([
-				["#0d53ff", temp.color],
-				["#e6f1ff", `${temp.color}20`],
-				["#f0faff", `${temp.color}20`],
-				["#7da3ff", `${temp.color}D0`],
-				["#ddd", `${temp.color}D0`],
-				["17,17,17,.9", base.hexToRgba(`${temp.color}D0`)],
-				["40,40,255,.04", base.hexToRgba(`${temp.color}20`)],
-				["#f7f7ff", "transparent"],
-				["238,247,255,0", base.hexToRgba(`${temp.color}00`)],
-			]);
-			base.addStyle(`${mount}-quark`, "style", `.file-list .hover-oper .hover-transparent-bg{background:transparent!important} .ant-checkbox-wrapper .ant-checkbox-checked .ant-checkbox-inner,.ant-checkbox-wrapper .ant-checkbox-indeterminate .ant-checkbox-inner:after{background-color:${temp.color}!important}`);
 		},
 		addButton() {
 			base.waitForKeyElements(config.$quark.mount.home, (element) => {
@@ -2967,7 +2383,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			return "";
 		},
 		async initPanLinker() {
-			base.registerMenuCommand();
 			this.addButton();
 			this.addPageListener();
 		},
@@ -3090,34 +2505,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 					history.replaceState({}, "", url);
 				}
 			}, 500)
-		},
-		beautifyPage() {
-			if (base.getValue("setting_ui_theme").custom.$123pan !== true) return;
-			base.adaptiveThemeOverride([
-				["#597dfc", temp.color],
-				["#5a7cfc", temp.color],
-				["#2A82E4", temp.color],
-				["#51a1f0", temp.color],
-				["#597DFC", temp.color],
-				["#40a9ff", temp.color],
-				["#3c80ff", temp.color],
-				["#3C80FF", temp.color],
-				["#1677ff", temp.color],
-				["#1890ff", temp.color],
-				["#0958d9", temp.color],
-				["#F0F8FF", `${temp.color}10`],
-				["#f0f9ff", `${temp.color}20`],
-				["#F2F5FF", `${temp.color}20`],
-				["#C5E1FF", `${temp.color}20`],
-				["#2961D9", `${temp.color}20`],
-				["#b8d8ff", `${temp.color}20`],
-				["#325cf0", `${temp.color}D0`],
-				["#66A1FF", `${temp.color}D0`],
-				["#69b1ff", `${temp.color}D0`],
-				["60, 128, 255", base.hexToRgba(temp.color)],
-				["42, 130, 228", base.hexToRgba(temp.color)],
-				["89, 125, 252", base.hexToRgba(temp.color)],
-			]);
 		},
 		getToken() {
 			$doc.find(".loading-popup .loading-title").html(`令牌获取中`);
@@ -3288,7 +2675,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			return "";
 		},
 		async initPanLinker() {
-			base.registerMenuCommand();
 			this.addButton();
 			this.addPageListener();
 		},
