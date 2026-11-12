@@ -2,8 +2,7 @@
 // @name              0-NetDisk
 // @version           1.1.3
 // @author            Hmjz100、油小猴
-// @icon              data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjNTc0QUI4Ii8+PGcgZmlsbD0iI2ZmZmZmZiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjQsIDY0KSBzY2FsZSgwLjc1KSI+PHBhdGggZD0iTTQyNS4xOTksMjIzLjk1N2MtMTMuMzAzLTEzLjMwMy0zNC45NjEtMTMuMzAzLTQ4LjIwNS0wLjA2bC04Ni44NjEsODUuMDg2VjM0LjEzM0MyOTAuMTMzLDE1LjMwOSwyNzQuODI0LDAsMjU2LDAgcy0zNC4xMzMsMTUuMzA5LTM0LjEzMywzNC4xMzN2Mjc0Ljg2N2wtODYuODAxLTg1LjA1MmMtMTMuMzEyLTEzLjMxMi0zNC45NjEtMTMuMzEyLTQ4LjI3MywwIGMtMTMuMzEyLDEzLjMxMi0xMy4zMDMsMzQuOTcsMCw0OC4yNzNjMC4wMTcsMC4wMTcsMC4wMzQsMC4wMjYsMC4wNDMsMC4wNDNsMTQ4LjM2MSwxNDYuNWM1LjcyNiw1LjY1OCwxMy4yMjcsOC40ODIsMjAuNzI3LDguNDgyIGM3LjU0MywwLDE1LjA3OC0yLjg1OSwyMC43ODctOC41NjhMNDI1LjE5OSwyNzIuMjNjNi40NTEtNi40NDMsMTAuMDAxLTE1LjAxOSwxMC4wMDEtMjQuMTMyUzQzMS42NSwyMzAuNDA5LDQyNS4xOTksMjIzLjk1N3oiLz48cGF0aCBkPSJNNDAxLjA2Nyw0NDMuNzMzSDExMC45MzNjLTE4LjgyNSwwLTM0LjEzMywxNS4zMDktMzQuMTMzLDM0LjEzM1M5Mi4xMDksNTEyLDExMC45MzMsNTEyaDI5MC4xMzMgYzE4LjgyNSwwLDM0LjEzMy0xNS4zMDksMzQuMTMzLTM0LjEzM1M0MTkuODgzLDQ0My43MzMsNDAxLjA2Nyw0NDMuNzMzeiIvPjwvZz48L3N2Zz4=
-// @description       《也许同类型中最好用？》系列 - 一个基于 JavaScript 的网盘文件下载地址获取工具，基于【网盘直链下载助手】修改 | 支持 百度网盘 / 阿里云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / 123云盘 | 开源・自用・去广 | 改界面・添功能・修Bug | 既超越原版，亦是同类中最好用版本！
+// @description       基于【网盘直链下载助手】修改 | 支持 百度网盘 / 阿里云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / 123云盘 
 // @source            https://github.com/hmjz100/LinkSwift/
 // @require           https://unpkg.com/jquery@3.6.0/dist/jquery.min.js
 // @require           https://unpkg.com/sweetalert2@11.4.8/dist/sweetalert2.min.js
@@ -91,7 +90,6 @@
 	let mount = idontknow("LinkSwift");
 	let info = {
 		version: (GM_info.script?.version || "1.1.3"),
-		icon: (GM_info.script?.icon || "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjNTc0QUI4Ii8+PGcgZmlsbD0iI2ZmZmZmZiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjQsIDY0KSBzY2FsZSgwLjc1KSI+PHBhdGggZD0iTTQyNS4xOTksMjIzLjk1N2MtMTMuMzAzLTEzLjMwMy0zNC45NjEtMTMuMzAzLTQ4LjIwNS0wLjA2bC04Ni44NjEsODUuMDg2VjM0LjEzM0MyOTAuMTMzLDE1LjMwOSwyNzQuODI0LDAsMjU2LDAgcy0zNC4xMzMsMTUuMzA5LTM0LjEzMywzNC4xMzN2Mjc0Ljg2N2wtODYuODAxLTg1LjA1MmMtMTMuMzEyLTEzLjMxMi0zNC45NjEtMTMuMzEyLTQ4LjI3MywwIGMtMTMuMzEyLDEzLjMxMi0xMy4zMDMsMzQuOTcsMCw0OC4yNzNjMC4wMTcsMC4wMTcsMC4wMzQsMC4wMjYsMC4wNDMsMC4wNDNsMTQ4LjM2MSwxNDYuNWM1LjcyNiw1LjY1OCwxMy4yMjcsOC40ODIsMjAuNzI3LDguNDgyIGM3LjU0MywwLDE1LjA3OC0yLjg1OSwyMC43ODctOC41NjhMNDI1LjE5OSwyNzIuMjNjNi40NTEtNi40NDMsMTAuMDAxLTE1LjAxOSwxMC4wMDEtMjQuMTMyUzQzMS42NSwyMzAuNDA5LDQyNS4xOTksMjIzLjk1N3oiLz48cGF0aCBkPSJNNDAxLjA2Nyw0NDMuNzMzSDExMC45MzNjLTE4LjgyNSwwLTM0LjEzMywxNS4zMDktMzQuMTMzLDM0LjEzM1M5Mi4xMDksNTEyLDExMC45MzMsNTEyaDI5MC4xMzMgYzE4LjgyNSwwLDM0LjEzMy0xNS4zMDksMzQuMTMzLTM0LjEzM1M0MTkuODgzLDQ0My43MzMsNDAxLjA2Nyw0NDMuNzMzeiIvPjwvZz48L3N2Zz4="),
 	};
 	let aria2 = {
 		domain: "http://localhost",
@@ -1087,7 +1085,6 @@ body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown) ::-webkit-scrollbar-
 .pl-title{font-size:18px;white-space:nowrap;text-overflow:ellipsis}
 .pl-content{padding:0;font-size:12px}
 .pl-footer{font-size:15px;text-align:center;display:block}
-.icon-download{width:15px;height:15px;vertical-align:-0.15em;fill:currentColor;overflow:hidden;font-size:18px}
 .pl-main{background:${temp.color}15;border-radius:10px;display:flex;flex-direction:column;gap:8px;max-height:calc(${document.documentElement.clientHeight}px - 300px);overflow:auto;padding:8px 6px}
 .pl-a{position:relative;vertical-align:baseline;color:${temp.color};border-bottom:2px solid ${temp.color};text-decoration:none!important;transition:color.3s,opacity.3s;will-change:color,opacity;overflow:hidden}
 .pl-a::before{content:"";position:absolute;left:0;bottom:0;width:100%;height:100%;background-color:${temp.color};transform:scaleY(0);transform-origin:bottom center;transition:transform.15s,opacity.3s;will-change:transform;z-index:-1}
@@ -1501,7 +1498,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "home") return;
 				let $button = $(`<div class="g-dropdown-button pl-button">
-					<div class="g-button g-button-blue color-button"><span class="g-button-right"><svg class="icon-download" style="color:#fff;margin-right:4px;"><use xlink:href="#icon-download"/></svg><span class="text" style="width:60px;">下载助手</span></span></div>
+					<div class="g-button g-button-blue color-button"><span class="g-button-right"><span class="text" style="width:60px;">下载助手</span></span></div>
 				</div>`);
 				element.prepend($button);
 			})
@@ -1510,8 +1507,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "main") return;
 				let $button = $(`<div class="wp-s-agile-tool-bar__h-group pl-button">
 					<div class="wp-s-agile-tool-bar__h-action is-need-left-sep is-main color-button">
-						<button type="button" class="u-button nd-file-list-toolbar-action-item u-button--primary u-button--small is-round is-has-icon pl-button color-button">
-							<svg class="icon-download" style="color:#fff;margin-right:4px;"><use xlink:href="#icon-download"/></svg>
+						<button type="button" class="u-button nd-file-list-toolbar-action-item u-button--primary u-button--small is-round pl-button color-button">
 							<span>下载助手</span>
 						</button>
 					</div>
@@ -1523,7 +1519,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "share") return;
 				let $button = $(`<a class="g-button tools-share-V20-btn save_btn pl-button color-button" style="padding:0;">
 					<span class="g-button-right" style="padding-left:10px">
-						<svg class="icon-download" style="color:#fff;margin-right:4px;"><use xlink:href="#icon-download"/></svg>
 						<span class="text" style="width:auto;">下载助手</span>
 					</span>
 				</a>`)
@@ -1918,7 +1913,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			}, true);
 		},
 		addButton() {
-			let $button = $(`<div class="pl-button tcloud-button"><svg class="icon-download" style="margin-right:4px;"><use xlink:href="#icon-download"/></svg>下载助手</div>`);
+			let $button = $(`<div class="pl-button tcloud-button">下载助手</div>`);
 			base.waitForKeyElements(config.$tcloud.mount.home, (element) => {
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "home") return;
@@ -2069,7 +2064,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 			base.waitForKeyElements(config.$xunlei.mount.home, (element) => {
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "home") return;
-				let $button = $(`<div class="xunlei-button pl-button"><svg class="icon-download" style="margin-right:6px;"><use xlink:href="#icon-download"/></svg><span style="font-size:13px;">下载助手</span></div>`);
+				let $button = $(`<div class="xunlei-button pl-button"><span style="font-size:13px;">下载助手</span></div>`);
 				element.prepend($button);
 			})
 		},
@@ -2251,7 +2246,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				let $button = $(`<div class="ant-dropdown-trigger pl-button" style="display: inline-block;">
 					<div class="ant-upload ant-upload-select ant-upload-select-text">
 						<button type="button" class="ant-btn ant-btn-primary quark-button">
-							<svg class="icon-download" style="margin-right:6px;"><use xlink:href="#icon-download"/></svg>
 							<span>下载助手</span>
 						</button>
 					</div>
@@ -2263,7 +2257,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "share") return;
 				let $button = $(`<button type="button" class="ant-btn btn-file ant-btn-primary pl-button quark-button">
-					<svg class="icon-download" style="margin-right:6px;"><use xlink:href="#icon-download"/></svg><span>下载助手</span>
+					<span>下载助手</span>
 				</button>`);
 				$button.css({ "height": "36px", "margin-left": "16px", "border-radius": "6px", "display": "inline-block" });
 				element.append($button);
@@ -2643,7 +2637,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "home") return;
 				let $button = $(`<button type="button" class="ant-btn ${[...document.querySelector(`[class*="ant-btn css-"]`).classList].find(c => /^css-[a-z0-9]+$/.test(c))} ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-dropdown-trigger mfy-button upload-button pl-button color-button" style="user-select: text !important;">
-					<svg class="icon-download" style="margin-right:5px;"><use xlink:href="#icon-download"/></svg>
 					<span>下载助手</span>
 				</button>`);
 				element.prepend($button);
@@ -2652,7 +2645,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "share") return;
 				let $button = $(`<div class="register pl-button color-button">
-					<svg class="icon-download" style="color:rgb(255, 255, 255);margin-right:5px;"><use xlink:href="#icon-download"/></svg>下载助手
+					下载助手
 				</div>`);
 				$button.css({ "width": "100px" });
 				element.append($button);
@@ -2661,7 +2654,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				temp.page = temp.main.detectPage();
 				if ($(".pl-button").length > 0 || !temp.page || temp.page !== "share") return;
 				let $button = $(`<button type="button" class="ant-btn ${[...document.querySelector(`[class*="ant-btn css-"]`).classList].find(c => /^css-[a-z0-9]+$/.test(c))} ant-btn-primary ant-btn-color-primary ant-btn-variant-solid mfy-button pl-button color-button" style="user-select: text !important;">
-					<svg class="icon-download" style="color:rgb(255, 255, 255);margin-right:5px;"><use xlink:href="#icon-download"/></svg>
 					<span>下载助手</span>
 				</button>`);
 				$(".single-file-sharing-container-content").css({ "width": "415px" });
@@ -2682,7 +2674,7 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 
 	let main = {
 		async init() {
-			base.console.log(`%c %c LinkSwift\n一个基于 JavaScript 的网盘文件下载地址获取工具\n仓库：https://github.com/hmjz100/LinkSwift\n版本：${info.version}\n领域：${(window.self !== window.top ? "[iframe] " : "") + (document.title ? (document.title + " (" + location.origin + location.pathname + ")") : location.href)}`, `background:url(${info.icon}) center center no-repeat;background-size:12px;padding:3px`, `padding:2px`);
+			base.console.log(`LinkSwift\n一个基于 JavaScript 的网盘文件下载地址获取工具\n仓库：https://github.com/hmjz100/LinkSwift\n版本：${info.version}\n领域：${(window.self !== window.top ? "[iframe] " : "") + (document.title ? (document.title + " (" + location.origin + location.pathname + ")") : location.href)}`);
 			let mountElem = $(`<${mount} class="${mount}" />`);
 			temp.mount = mountElem;
 
@@ -2712,12 +2704,6 @@ a.downloadSubtitle:disabled, button.downloadSubtitle:disabled{background-color:$
 				list.version = info.version;
 				base.setValue("setting_init", list);
 			}
-			temp.mount.append(`<svg aria-hidden="true" style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
-				<symbol id="icon-download" viewBox="0 0 512 512">
-					<path d="M425.199,223.957c-13.303-13.303-34.961-13.303-48.205-0.06l-86.861,85.086V34.133C290.133,15.309,274.824,0,256,0 s-34.133,15.309-34.133,34.133v274.867l-86.801-85.052c-13.312-13.312-34.961-13.312-48.273,0 c-13.312,13.312-13.303,34.97,0,48.273c0.017,0.017,0.034,0.026,0.043,0.043l148.361,146.5c5.726,5.658,13.227,8.482,20.727,8.482 c7.543,0,15.078-2.859,20.787-8.568L425.199,272.23c6.451-6.443,10.001-15.019,10.001-24.132S431.65,230.409,425.199,223.957z"></path>
-					<path d="M401.067,443.733H110.933c-18.825,0-34.133,15.309-34.133,34.133S92.109,512,110.933,512h290.133 c18.825,0,34.133-15.309,34.133-34.133S419.883,443.733,401.067,443.733z"></path>
-				</symbol>
-			</svg>`);
 		}
 	};
 
