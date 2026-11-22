@@ -11,6 +11,8 @@
 // @grant        GM_unregisterMenuCommand
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_deleteValue
+// @grant        GM_listValues
 // @downloadURL  https://github.com/ddvcx/sh/raw/m/js/0-工具.js
 // ==/UserScript==
 
@@ -23,12 +25,13 @@ const C = {
         /华为|鸿蒙|huawei|[尚享问智尊]界|小米[澎汽a-z0-9]|红米|REDMI/,
         /法拉第|理想[汽a-z]|会员专享/
     ],
-    Res: "720p",              // 视频画质
+    Res: "1080p",              // 视频画质
     Speed: 1.1,                // 视频速度
     Alive: 500,                 // 刷新间隔(秒)
     Retries: 10,                // 视频设置重试次数
     Delay: 500,                 // 视频设置延迟(毫秒)
-    MaxVisited: 5000            // 单域名最多保留的已访问链接记录数(超出后清理最早记录)
+    MaxVisited: 5000,           // 已访问链接单域名保留的记录数(超出后清理最早记录)
+    KeepDays: 360               // 已读记录保留天数(超出自动清理)
 };
 (function() {
     'use strict';
@@ -51,6 +54,7 @@ const C = {
             }
         });
         refreshMenus();
+        GM_registerMenuCommand('清理过期记录', purgeVisited);
         if(State.color) initColor();
         if(State.block) initBlockRegex();
         if(State.color || State.block) setupObserver();
@@ -81,43 +85,53 @@ const C = {
     }
 
     // 已读颜色
-    let visitedMap = new Map(); // 当前域名已访问链接 Map(href -> timestamp)，跨标签页共享
-    const HALF_YEAR_MS = 180 * 24 * 60 * 60 * 1000;
-    const CLEAN_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000; // 低频清理间隔：7天
-    function loadVisited() {
+    let visitedMap = new Map();
+    const KEEP_MS = C.KeepDays * 24 * 60 * 60 * 1000;
+    const CLEAN_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
+    let saveTimer = null;
+    function mergeStored() {
         try {
             const saved = GM_getValue('0_visited_' + location.hostname, null);
-            if(saved) {
-                const parsed = JSON.parse(saved);
-                const now = Date.now();
-                if (Array.isArray(parsed)) {
-                    parsed.forEach(item => {
-                        if (typeof item === 'string') {
-                            visitedMap.set(item, now);
-                        } else if (item && item.h) {
-                            visitedMap.set(item.h, item.t || now);
-                        }
-                    });
-                }
-                // 仅在页面加载时，且距离上次清理满 7 天才低频清理一次
-                const lastClean = GM_getValue('0_last_clean_' + location.hostname, 0);
-                if (now - lastClean > CLEAN_INTERVAL_MS) {
-                    cleanExpired(now);
-                    GM_setValue('0_last_clean_' + location.hostname, now);
-                }
-            }
+            if(!saved) return;
+            const parsed = JSON.parse(saved);
+            if(!Array.isArray(parsed)) return;
+            const now = Date.now();
+            parsed.forEach(item => {
+                const h = typeof item === 'string' ? item : item?.h;
+                if(!h) return;
+                const t = typeof item === 'string' ? now : (item.t || now);
+                if(now - t > KEEP_MS) return;
+                if((visitedMap.get(h) || 0) < t) visitedMap.set(h, t);
+            });
         } catch(e) {}
     }
+    function loadVisited() {
+        mergeStored();
+        const now = Date.now();
+        const lastClean = GM_getValue('0_last_clean_' + location.hostname, 0);
+        if (now - lastClean > CLEAN_INTERVAL_MS) {
+            cleanExpired(now);
+            GM_setValue('0_last_clean_' + location.hostname, now);
+        }
+    }
     function saveVisited() {
+        clearTimeout(saveTimer);
+        saveTimer = null;
         try {
+            mergeStored();
+            trimVisited();
             const arr = Array.from(visitedMap.entries()).map(([h, t]) => ({ h, t }));
             GM_setValue('0_visited_' + location.hostname, JSON.stringify(arr));
         } catch(e) {}
     }
+    function scheduleSave() {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveVisited, 500);
+    }
     function cleanExpired(now = Date.now()) {
         let changed = false;
         for (const [h, t] of visitedMap.entries()) {
-            if (now - t > HALF_YEAR_MS) {
+            if (now - t > KEEP_MS) {
                 visitedMap.delete(h);
                 changed = true;
             }
@@ -126,11 +140,23 @@ const C = {
     }
     function trimVisited() {
         if(visitedMap.size <= C.MaxVisited) return;
-        let excess = visitedMap.size - C.MaxVisited;
-        for(const h of visitedMap.keys()) {
-            if(excess-- <= 0) break;
-            visitedMap.delete(h);
-        }
+        Array.from(visitedMap.entries()).sort((x, y) => x[1] - y[1]).slice(0, visitedMap.size - C.MaxVisited).forEach(([h]) => visitedMap.delete(h));
+    }
+    window.addEventListener('pagehide', () => { if(saveTimer) saveVisited(); });
+    document.addEventListener('visibilitychange', () => { if(document.hidden && saveTimer) saveVisited(); });
+    function purgeVisited() {
+        const now = Date.now();
+        let n = 0;
+        cleanExpired(now);
+        GM_listValues().filter(k => k.startsWith('0_visited_')).forEach(k => {
+            try {
+                const arr = JSON.parse(GM_getValue(k, '[]'));
+                const kept = arr.filter(i => typeof i === 'string' || (i && (!i.t || now - i.t <= KEEP_MS)));
+                n += arr.length - kept.length;
+                if(kept.length) GM_setValue(k, JSON.stringify(kept)); else GM_deleteValue(k);
+            } catch(e) {}
+        });
+        alert('已清理 ' + n + ' 条超过 ' + C.KeepDays + ' 天的已读记录');
     }
     function initColor() {
         GM_addStyle(`a:visited, a:visited *, a.gm-visited, a.gm-visited * { color: ${C.Color} !important; }`);
@@ -145,8 +171,7 @@ const C = {
             if(a && a.href) {
                 a.classList.add('gm-visited');
                 visitedMap.set(a.href, Date.now());
-                trimVisited();
-                saveVisited();
+                scheduleSave();
             }
         }
     }, {passive:true});
@@ -221,6 +246,7 @@ const C = {
         const isYT = host.includes('youtube.com');
         const isBili = host.includes('bilibili.com');
         const resReg = new RegExp(C.Res.replace(/\s+/g, ''), 'i');
+        const fpsReg = /高帧率|高码率/; // 排除B站高帧率档位
         let videoStates = new WeakMap();
         let hasExecutedLayout = false;
         const isAlreadyWebFull = () => {
@@ -271,7 +297,9 @@ const C = {
                 await waitUntil(() => false, () => {
                     const items = document.querySelectorAll('.bpx-player-ctrl-quality-menu-item');
                     if (items.length > 0) {
-                        const targetRes = Array.from(items).find(i => resReg.test(i.innerText.replace(/\s/g,'')));
+                        const list = Array.from(items);
+                        const txt = i => i.innerText.replace(/\s/g,'');
+                        const targetRes = list.find(i => resReg.test(txt(i)) && !fpsReg.test(txt(i))) || list.find(i => resReg.test(txt(i)));
                         if (targetRes && !targetRes.classList.contains('bpx-state-active')) targetRes.click();
                         return true;
                     }
@@ -435,8 +463,13 @@ const C = {
 
     // 页面保活
     let aliveTimer;
-    let aliveWorker; // 后台防节流 Worker
-    let aliveTargetTime = 0; // 预计刷新时间戳
+    let aliveWorker;
+    let aliveTargetTime = 0;
+    let aliveDirty = false;
+    document.addEventListener('input', e => { if(e.isTrusted) aliveDirty = true; }, true);
+    function doReload() {
+        if(aliveDirty) toggleAlive(); else location.reload();
+    }
     function clearAliveTimer() {
         if (aliveTimer) { clearTimeout(aliveTimer); aliveTimer = null; }
         if (aliveWorker) { aliveWorker.terminate(); aliveWorker = null; }
@@ -449,14 +482,15 @@ const C = {
         try {
             const blob = new Blob([`setTimeout(() => postMessage(0), ${delayMs});`], { type: 'application/javascript' });
             aliveWorker = new Worker(URL.createObjectURL(blob));
-            aliveWorker.onmessage = () => { location.reload(); };
+            aliveWorker.onmessage = doReload;
+            aliveWorker.onerror = () => { if(aliveWorker) { aliveWorker.terminate(); aliveWorker = null; } if(!aliveTimer) aliveTimer = setTimeout(doReload, delayMs); };
         } catch(e) {
-            aliveTimer = setTimeout(() => { location.reload(); }, delayMs);
+            aliveTimer = setTimeout(doReload, delayMs);
         }
     }
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && State.alive && aliveTargetTime && Date.now() >= aliveTargetTime) {
-            location.reload();
+            doReload();
         }
     });
     init();
