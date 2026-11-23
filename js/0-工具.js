@@ -1,4 +1,3 @@
-
 // ==UserScript==
 // @name         0-工具
 // @namespace    http://tampermonkey.net/
@@ -229,7 +228,7 @@ const C = {
         const isYT = host.includes('youtube.com');
         const isBili = host.includes('bilibili.com');
         const resReg = new RegExp(C.Res.replace(/\s+/g, ''), 'i');
-        const fpsReg = /高帧率|高码率/;
+        const fpsReg = /60帧|高帧率|高码率/;
         let videoStates = new WeakMap();
         let hasExecutedLayout = false;
         const isAlreadyWebFull = () => {
