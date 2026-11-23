@@ -1,7 +1,8 @@
+
 // ==UserScript==
 // @name         0-工具
 // @namespace    http://tampermonkey.net/
-// @version      0.21
+// @version      0.22
 // @description  工具箱：链接染色、内容屏蔽、视频设置、解除限制、强力粘贴、页面保活
 // @author       Optimizer
 // @include      *://*
@@ -27,12 +28,13 @@ const C = {
     ],
     Res: "1080p",              // 视频画质
     Speed: 1.1,                // 视频速度
-    Alive: 500,                 // 刷新间隔(秒)
-    Retries: 10,                // 视频设置重试次数
-    Delay: 500,                 // 视频设置延迟(毫秒)
-    MaxVisited: 5000,           // 已访问链接单域名保留的记录数(超出后清理最早记录)
-    KeepDays: 360               // 已读记录保留天数(超出自动清理)
+    Alive: 500,                // 刷新间隔(秒)
+    Retries: 10,               // 视频设置重试次数
+    Delay: 500,                // 视频设置延迟(毫秒)
+    MaxVisited: 5000,          // 已读链接单域名保留的记录数
+    KeepDays: 360              // 已读记录保留天数
 };
+
 (function() {
     'use strict';
     const State = {};
@@ -54,7 +56,6 @@ const C = {
             }
         });
         refreshMenus();
-        GM_registerMenuCommand('清理过期记录', purgeVisited);
         if(State.color) initColor();
         if(State.block) initBlockRegex();
         if(State.color || State.block) setupObserver();
@@ -87,7 +88,6 @@ const C = {
     // 已读颜色
     let visitedMap = new Map();
     const KEEP_MS = C.KeepDays * 24 * 60 * 60 * 1000;
-    const CLEAN_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
     let saveTimer = null;
     function mergeStored() {
         try {
@@ -107,36 +107,33 @@ const C = {
     }
     function loadVisited() {
         mergeStored();
-        const now = Date.now();
-        const lastClean = GM_getValue('0_last_clean_' + location.hostname, 0);
-        if (now - lastClean > CLEAN_INTERVAL_MS) {
-            cleanExpired(now);
-            GM_setValue('0_last_clean_' + location.hostname, now);
-        }
+        const before = visitedMap.size;
+        cleanExpired();
+        trimVisited();
+        if(visitedMap.size !== before) scheduleSave();
     }
     function saveVisited() {
         clearTimeout(saveTimer);
         saveTimer = null;
         try {
             mergeStored();
+            cleanExpired();
             trimVisited();
             const arr = Array.from(visitedMap.entries()).map(([h, t]) => ({ h, t }));
-            GM_setValue('0_visited_' + location.hostname, JSON.stringify(arr));
+            const key = '0_visited_' + location.hostname;
+            if(arr.length) GM_setValue(key, JSON.stringify(arr));
+            else GM_deleteValue(key);
         } catch(e) {}
     }
     function scheduleSave() {
         clearTimeout(saveTimer);
         saveTimer = setTimeout(saveVisited, 500);
     }
-    function cleanExpired(now = Date.now()) {
-        let changed = false;
+    function cleanExpired() {
+        const now = Date.now();
         for (const [h, t] of visitedMap.entries()) {
-            if (now - t > KEEP_MS) {
-                visitedMap.delete(h);
-                changed = true;
-            }
+            if (now - t > KEEP_MS) visitedMap.delete(h);
         }
-        if (changed) saveVisited();
     }
     function trimVisited() {
         if(visitedMap.size <= C.MaxVisited) return;
@@ -144,20 +141,6 @@ const C = {
     }
     window.addEventListener('pagehide', () => { if(saveTimer) saveVisited(); });
     document.addEventListener('visibilitychange', () => { if(document.hidden && saveTimer) saveVisited(); });
-    function purgeVisited() {
-        const now = Date.now();
-        let n = 0;
-        cleanExpired(now);
-        GM_listValues().filter(k => k.startsWith('0_visited_')).forEach(k => {
-            try {
-                const arr = JSON.parse(GM_getValue(k, '[]'));
-                const kept = arr.filter(i => typeof i === 'string' || (i && (!i.t || now - i.t <= KEEP_MS)));
-                n += arr.length - kept.length;
-                if(kept.length) GM_setValue(k, JSON.stringify(kept)); else GM_deleteValue(k);
-            } catch(e) {}
-        });
-        alert('已清理 ' + n + ' 条超过 ' + C.KeepDays + ' 天的已读记录');
-    }
     function initColor() {
         GM_addStyle(`a:visited, a:visited *, a.gm-visited, a.gm-visited * { color: ${C.Color} !important; }`);
         loadVisited();
@@ -246,7 +229,7 @@ const C = {
         const isYT = host.includes('youtube.com');
         const isBili = host.includes('bilibili.com');
         const resReg = new RegExp(C.Res.replace(/\s+/g, ''), 'i');
-        const fpsReg = /高帧率|高码率/; // 排除B站高帧率档位
+        const fpsReg = /高帧率|高码率/;
         let videoStates = new WeakMap();
         let hasExecutedLayout = false;
         const isAlreadyWebFull = () => {
@@ -274,7 +257,6 @@ const C = {
             const state = videoStates.get(v) || {};
             if(!State.video || state.qual) return;
             videoStates.set(v, { ...state, qual: true });
-
             if(v.setPlaybackQualityRange) {
                 v.setPlaybackQualityRange(C.Res, C.Res);
             } else if(isYT) {
@@ -325,7 +307,6 @@ const C = {
             const state = videoStates.get(v) || {};
             if(!State.video || state.sub) return;
             videoStates.set(v, { ...state, sub: true });
-
             if(isYT) {
                 await waitUntil(() => false, () => {
                     const subBtn = document.querySelector('.ytp-subtitles-button');
